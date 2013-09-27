@@ -41,12 +41,12 @@ abstract class EventSiteScraperV1
 			$event->eventUrl		= $this->eventScrapeItem->eventUrl;
 			$event->eventIdentifier	= $this->eventScrapeItem->eventIdentifier;
 		}
-		$event->addAssets($this->parseGetAssets());
+		$event->addAssets($this->parseGetAssets($event));
 		return $event;
 	}
 
 	/**
 	 * @return array [EventAsset]
 	 */
-	abstract protected function parseGetAssets();
+	abstract protected function parseGetAssets(Event $event);
 }
