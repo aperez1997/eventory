@@ -10,6 +10,7 @@ class Event
 {
 	public $eventIdentifier;
 	public $eventUrl;
+	public $descrption;
 
 	/** @var array EventAsset */
 	public $assets = array();
