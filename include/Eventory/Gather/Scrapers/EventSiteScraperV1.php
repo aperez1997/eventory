@@ -41,7 +41,7 @@ abstract class EventSiteScraperV1
 			$event->eventUrl		= $this->eventScrapeItem->eventUrl;
 			$event->eventIdentifier	= $this->eventScrapeItem->eventIdentifier;
 		}
-		$event->addAssets() 			= $this->parseGetAssets();
+		$event->addAssets($this->parseGetAssets());
 		return $event;
 	}
 
