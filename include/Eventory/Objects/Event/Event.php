@@ -12,7 +12,7 @@ class Event
 	public $eventUrl;
 
 	/** @var array EventAsset */
-	public $assets;
+	public $assets = array();
 
 	public function addAssets($assets)
 	{
