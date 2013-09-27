@@ -20,26 +20,28 @@ abstract class EventSiteScraperV1
 	 * @param EventScrapeItem $item
 	 * @return Event
 	 */
-	public function scrapeFromWeb(EventScrapeItem $item)
+	public function scrapeFromWeb(EventScrapeItem $item, Event $existingEvent = null)
 	{
 		$this->eventScrapeItem = $item;
 
 		$url = $this->eventScrapeItem->eventUrl;
-		$event = $this->parseIntoEvent($url);
+		$event = $this->parseIntoEvent($url, $event);
 		return $event;
 	}
 
 	/**
 	 * @return Event
 	 */
-	protected function parseIntoEvent($source)
+	protected function parseIntoEvent($source, Event $existingEvent = null)
 	{
 		$this->htmlDom = file_get_html($source);
-
-		$event = new Event();
-		$event->eventUrl		= $this->eventScrapeItem->eventUrl;
-		$event->eventIdentifier	= $this->eventScrapeItem->eventIdentifier;
-		$event->assets 			= $this->parseGetAssets();
+		
+		if (!isset($existingEvent)){
+			$event = new Event();
+			$event->eventUrl		= $this->eventScrapeItem->eventUrl;
+			$event->eventIdentifier	= $this->eventScrapeItem->eventIdentifier;
+		}
+		$event->addAssets() 			= $this->parseGetAssets();
 		return $event;
 	}
 

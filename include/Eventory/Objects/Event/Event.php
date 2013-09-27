@@ -13,4 +13,9 @@ class Event
 
 	/** @var array EventAsset */
 	public $assets;
+
+	public function addAssets($assets)
+	{
+		$this->assets = array_merge($this->assets, $assets);
+	}
 }

@@ -26,7 +26,12 @@ abstract class EventListSiteScraperV1
 				printf("item [%s] does not map to a site scraper\n", print_r($scrapeItem, true));
 				continue;
 			}
-			$events[] = $eventSiteScraper->scrapeFromWeb($scrapeItem);
+			$id = $scrapeItem->eventIdentifier;
+			$existingEvent = null;
+			if (isset($events[$id])){
+				$existingEvent = $events[$id];
+			}
+			$events[$id] = $eventSiteScraper->scrapeFromWeb($scrapeItem, $existingEvent);
 			usleep(1000000 / $this->ratePerSecond);
 		}
 		return $events;
