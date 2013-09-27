@@ -25,7 +25,7 @@ abstract class EventSiteScraperV1
 		$this->eventScrapeItem = $item;
 
 		$url = $this->eventScrapeItem->eventUrl;
-		$event = $this->parseIntoEvent($url, $event);
+		$event = $this->parseIntoEvent($url, $existingEvent);
 		return $event;
 	}
 
@@ -34,7 +34,7 @@ abstract class EventSiteScraperV1
 	 */
 	protected function parseIntoEvent($source, Event $event = null)
 	{
-		$this->htmlDom = file_get_html($source);
+		$qthis->htmlDom = file_get_html($source);
 		
 		if (!isset($event)){
 			$event = new Event();
