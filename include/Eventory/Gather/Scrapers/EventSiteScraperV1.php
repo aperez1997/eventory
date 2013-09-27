@@ -32,11 +32,11 @@ abstract class EventSiteScraperV1
 	/**
 	 * @return Event
 	 */
-	protected function parseIntoEvent($source, Event $existingEvent = null)
+	protected function parseIntoEvent($source, Event $event = null)
 	{
 		$this->htmlDom = file_get_html($source);
 		
-		if (!isset($existingEvent)){
+		if (!isset($event)){
 			$event = new Event();
 			$event->eventUrl		= $this->eventScrapeItem->eventUrl;
 			$event->eventIdentifier	= $this->eventScrapeItem->eventIdentifier;
