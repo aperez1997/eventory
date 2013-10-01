@@ -9,7 +9,7 @@ namespace Eventory\Examples\Slashdot;
 use Eventory\Gather\Scrapers\EventSiteScraperV1;
 use Eventory\Objects\Event\Assets\EventAsset;
 
-class SlashDotEventSiteScraper extends EventSiteScraperV1
+class SlashdotEventSiteScraper extends EventSiteScraperV1
 {
 	function parseGetAssets()
 	{
@@ -22,6 +22,7 @@ class SlashDotEventSiteScraper extends EventSiteScraperV1
 			$a = $topic->find('a', 0);
 			$asset->linkUrl = $a->href;
 			$asset->imageUrl = $a->find('img', 0)->src;
+			$asset->key = 'icon';
 			$assets[] = $asset;
 		}
 

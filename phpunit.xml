@@ -1,0 +1,10 @@
+<phpunit colors="true"
+         convertErrorsToExceptions = "true"
+         convertNoticesToExceptions = "true"
+         convertWarningsToExceptions = "true" bootstrap="include/Eventory/Tests/test_bootstrap.php">
+    <testsuites>
+        <testsuite name="Eventory Test Suite">
+            <directory>include/Eventory/Tests/Suites/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

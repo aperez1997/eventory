@@ -4,11 +4,10 @@
  * @copyright Copyright (c) 2007-2013 Zoosk Inc.
  */
 
-namespace Eventory\Objects;
+namespace Eventory\Objects\Performers;
 
-
-class EventScrapeItem
+class Performer
 {
-	public $eventKey;
-	public $eventUrl;
+	public $id;
+	public $name;
 }

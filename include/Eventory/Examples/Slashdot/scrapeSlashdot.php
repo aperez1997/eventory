@@ -6,10 +6,14 @@
 
 use Eventory\Examples\ExampleSiteScraperFactory;
 use Eventory\Examples\Slashdot\SlashdotListSiteScraper;
+use Eventory\Storage\File\StorageProviderSerialized;
 
 require_once __DIR__ . '/../../../../bootstrap.php';
 
-$siteScraperFactory = new ExampleSiteScraperFactory();
-$siteListScraper = new SlashdotListSiteScraper();
-$events = $siteListScraper->scrapeFromWeb($siteScraperFactory);
-print_r($events);
+$fileName = __DIR__ .'/slashdot.data';
+$storeProvider = new StorageProviderSerialized($fileName);
+$siteScraperFactory = new ExampleSiteScraperFactory($storeProvider);
+$siteListScraper = new SlashdotListSiteScraper($siteScraperFactory);
+printf("Scraping slashdot\n");
+$events = $siteListScraper->scrapeFromWeb();
+$storeProvider->saveEvents($events);

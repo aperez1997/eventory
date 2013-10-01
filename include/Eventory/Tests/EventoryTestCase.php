@@ -4,11 +4,8 @@
  * @copyright Copyright (c) 2007-2013 Zoosk Inc.
  */
 
-namespace Eventory\Objects;
+namespace Eventory\Tests;
 
-
-class EventScrapeItem
+class EventoryTestCase extends \PHPUnit_Framework_TestCase
 {
-	public $eventKey;
-	public $eventUrl;
 }

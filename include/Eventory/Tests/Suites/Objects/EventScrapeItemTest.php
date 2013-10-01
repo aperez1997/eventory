@@ -1,0 +1,20 @@
+<?php
+/**
+ * @author Tony Perez <tonyp@zoosk.com>
+ * @copyright Copyright (c) 2007-2013 Zoosk Inc.
+ */
+
+use Eventory\Objects\EventScrapeItem;
+use Eventory\Tests\EventoryTestCase;
+
+class EventScrapeItemTest extends EventoryTestCase
+{
+	public function testBasic()
+	{
+		$id = uniqid();
+
+		$scrapeItem = new EventScrapeItem();
+		$scrapeItem->eventKey = $id;
+		$this->assertTrue(true);
+	}
+}

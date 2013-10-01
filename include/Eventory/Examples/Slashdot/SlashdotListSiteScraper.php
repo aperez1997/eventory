@@ -9,9 +9,10 @@ use Eventory\Utils\HttpUtils;
  * @author Tony Perez <tonyp@zoosk.com>
  * @copyright Copyright (c) 2007-2013 Zoosk Inc.
  */
-
 class SlashdotListSiteScraper extends EventListSiteScraperV1
 {
+	protected $maxToScrape = 6;
+
 	protected function getListSiteUrl()
 	{
 		return 'http://slashdot.org';

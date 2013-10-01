@@ -11,27 +11,45 @@ use Eventory\Objects\EventScrapeItem;
 
 abstract class EventListSiteScraperV1
 {
+	/** @var EventSiteScraperFactoryV1 */
+	protected $siteScraperFactory;
+
+	public function __construct(EventSiteScraperFactoryV1 $siteScraperFactory)
+	{
+		$this->siteScraperFactory = $siteScraperFactory;
+	}
+
 	protected $content;
 
 	protected $ratePerSecond = 10;
 
-	public function scrapeFromWeb(EventSiteScraperFactoryV1 $siteScraperFactory)
+	protected $maxToScrape = null;
+
+	public function scrapeFromWeb()
 	{
 		$scrapeItems = $this->scrapeFromWebIntoScrapeItems();
 
+		$maxToScrape = $this->maxToScrape;
+
 		$events = array();
 		foreach ($scrapeItems as $scrapeItem){
-			$eventSiteScraper = $siteScraperFactory->getSiteScraperForScrapeItem($scrapeItem);
+			/** @var EventScrapeItem $scrapeItem */
+			if (isset($maxToScrape)){
+				if ($maxToScrape-- <= 0) break;
+			}
+
+			$eventSiteScraper = $this->siteScraperFactory->getSiteScraperForScrapeItem($scrapeItem);
 			if (!$eventSiteScraper instanceof EventSiteScraperV1){
 				printf("item [%s] does not map to a site scraper\n", print_r($scrapeItem, true));
 				continue;
 			}
-			$id = $scrapeItem->eventIdentifier;
+			$key = $scrapeItem->eventKey;
 			$existingEvent = null;
-			if (isset($events[$id])){
-				$existingEvent = $events[$id];
+			if (isset($events[$key])){
+				$existingEvent = $events[$key];
 			}
-			$events[$id] = $eventSiteScraper->scrapeFromWeb($scrapeItem, $existingEvent);
+			$event = $eventSiteScraper->scrapeFromWeb($scrapeItem, $existingEvent);
+			$events[$event->getKey()] = $event;
 			usleep(1000000 / $this->ratePerSecond);
 		}
 		return $events;
@@ -62,7 +80,8 @@ abstract class EventListSiteScraperV1
 			}
 			$href = $this->getEventHrefFromNode($htmlNode);
 			$id = $this->getEventIdFromNode($htmlNode);
-			$scrapeItems[] = $this->createEventScrapeItem($href, $id);
+			$scrapeItem = $this->createEventScrapeItem($href, $id);
+			$scrapeItems[] = $scrapeItem;
 		}
 		return $scrapeItems;
 	}
@@ -82,7 +101,7 @@ abstract class EventListSiteScraperV1
 	{
 		$scrapeItem = new EventScrapeItem();
 		$scrapeItem->eventUrl = $url;
-		$scrapeItem->eventIdentifier = $id;
+		$scrapeItem->eventKey = $id;
 		return $scrapeItem;
 	}
 }
