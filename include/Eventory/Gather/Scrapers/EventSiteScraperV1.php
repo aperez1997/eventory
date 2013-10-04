@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Tony Perez <tonyp@zoosk.com>
+ * @author Tony Perez <aperez1997@yahoo.com>
  * @copyright Copyright (c) 2007-2013 Zoosk Inc.
  */
 

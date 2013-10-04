@@ -1,12 +1,13 @@
 <?php
 /**
- * @author Tony Perez <tonyp@zoosk.com>
+ * @author Tony Perez <aperez1997@yahoo.com>
  * @copyright Copyright (c) 2007-2013 Zoosk Inc.
  */
 
 namespace Eventory\Objects\Event;
 
 use Eventory\Objects\Event\Assets\EventAsset;
+use Eventory\Objects\Performers\Performer;
 
 class Event
 {
@@ -17,6 +18,9 @@ class Event
 
 	/** @var array EventAsset */
 	public $assets = array();
+
+	/** @var array Performer */
+	protected $performerIds = array();
 
 	/** @var array string */
 	protected $subUrls = array();
@@ -48,8 +52,24 @@ class Event
 		ksort($this->subUrls);
 	}
 
+	public function getAssets()
+	{
+		return $this->assets;
+	}
+
 	public function getSubUrls()
 	{
 		return array_keys($this->subUrls);
+	}
+
+	public function addPerformerId(Performer $performer)
+	{
+		$id = $performer->getId();
+		$this->performerIds[$id] = $id;
+	}
+
+	public function getPerformerIds()
+	{
+		return $this->performerIds;
 	}
 }

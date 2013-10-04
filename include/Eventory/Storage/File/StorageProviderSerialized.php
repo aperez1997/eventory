@@ -1,27 +1,38 @@
 <?php
 /**
- * @author Tony Perez <tonyp@zoosk.com>
+ * @author Tony Perez <aperez1997@yahoo.com>
  * @copyright Copyright (c) 2007-2013 Zoosk Inc.
  */
 
 namespace Eventory\Storage\File;
 
 use Eventory\Objects\Event\Event;
+use Eventory\Objects\Performers\Performer;
 use Eventory\Storage\iStorageProvider;
 
 class StorageProviderSerialized implements iStorageProvider
 {
+	const CURRENT_VERSION = 1;
+
+	const KEY_VERSION		= 'v';
+	const KEY_EVENTS		= 'e';
+	const KEY_PERFORMERS	= 'p';
+
 	protected $fileName;
+	protected $loaded;
 
 	protected $events;
+	protected $performers;
 
 	protected $keyToIdxMap;
 
 	public function __construct($fileName)
 	{
 		$this->fileName		= $fileName;
-		$this->events		= null;
-		$this->keyToIdxMap	= null;
+		$this->events		= array();
+		$this->performers	= array();
+		$this->keyToIdxMap	= array();
+		$this->loaded		= false;
 	}
 
 	/**
@@ -29,7 +40,7 @@ class StorageProviderSerialized implements iStorageProvider
 	 */
 	public function saveEvents(array $events)
 	{
-		$this->loadEvents();
+		$this->getEvents();
 		foreach ($events as $event){
 			/** @var Event $event */
 			$id = $event->getId();
@@ -38,8 +49,16 @@ class StorageProviderSerialized implements iStorageProvider
 				$event->id = $id;
 			}
 			$this->events[$id] = $event;
+
+			// make sure performer event ids are sane
+			$performerIds = $event->getPerformerIds();
+			foreach ($performerIds as $performerId){
+				$performer = $this->loadPerformerById($performerId);
+				$performer->addEventId($id);
+			}
 		}
-		$this->saveEventsToFile();
+		// will also save performers!
+		$this->saveDataToFile();
 	}
 
 	/**
@@ -48,9 +67,13 @@ class StorageProviderSerialized implements iStorageProvider
 	 */
 	public function loadEventsById(array $ids)
 	{
-		$this->loadEvents();
+		$this->getEvents();
 		$events = array();
-		// TODO
+		foreach ($ids as $id){
+			if (isset($this->events[$id])){
+				$events[$id] = $this->events[$id];
+			}
+		}
 		return $events;
 	}
 
@@ -60,7 +83,7 @@ class StorageProviderSerialized implements iStorageProvider
 	 */
 	public function loadEventByKey($key)
 	{
-		$this->loadEvents();
+		$this->getEvents();
 		$event = null;
 		if (isset($this->keyToIdxMap[$key])){
 			$idx = $this->keyToIdxMap[$key];
@@ -72,13 +95,66 @@ class StorageProviderSerialized implements iStorageProvider
 	}
 
 	/**
-	 * @param $performerId
-	 * @return array Event
+	 * @param string $name
+	 * @return Performer
 	 */
-	public function loadEventsByPerformer($performerId)
+	public function createPerformer($name)
 	{
-		$this->loadEvents();
-		return array();
+		$lookup = $this->loadPerformerByName($name);
+		if ($lookup instanceof Performer){
+			return $lookup;
+		}
+		$performer = Performer::CreateNew($name);
+		$id = count($this->performers) + 1;
+		$performer->id = $id;
+		return $performer;
+	}
+
+	public function savePerformers(array $performers)
+	{
+		$this->getPerformers();
+		foreach ($performers as $performer){
+			/** @var Performer $performer */
+			$id = $performer->getId();
+			$this->performers[$id] = $performer;
+		}
+		$this->saveDataToFile();
+	}
+
+	/**
+	 * @param $performerId
+	 * @return Performer
+	 */
+	public function loadPerformerById($performerId)
+	{
+		$performers = $this->getPerformers();
+		if (isset($performers[$performerId])){
+			return $performers[$performerId];
+		}
+		return null;
+	}
+
+	/**
+	 * @param string $name
+	 * @return Performer
+	 */
+	public function loadPerformerByName($name)
+	{
+		foreach ($this->getPerformers() as $performer){
+			/** @var Performer $performer */
+			if (strcasecmp($performer->getName(), $name) == 0){
+				return $performer;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return array of Performer
+	 */
+	public function loadAllPerformers()
+	{
+		return $this->getPerformers();
 	}
 
 	/**
@@ -88,37 +164,87 @@ class StorageProviderSerialized implements iStorageProvider
 	 */
 	public function loadRecentEvents($maxCount = null, $offset = null)
 	{
-		if (empty($maxCount)){
+		if (!isset($maxCount)){
 			$maxCount = 50;
 		}
-		if (empty($offset)){
+		if (!isset($offset)){
 			$offset = 0;
 		}
-		$events = $this->loadEvents();
-		return array_slice($events, $offset * -1, $maxCount);
+		$events = $this->getEvents();
+		$events = array_reverse($events);
+		$events = array_slice($events, $offset, $maxCount);
+		return $events;
 	}
 
-	protected function loadEvents()
+	protected function getEvents()
 	{
-		if ($this->events === null){
-			$events = array();
-			printf("reading from file [%s]\n", $this->fileName);
-			$eventsRaw = file_get_contents($this->fileName);
-			if ($eventsRaw !== false && !empty($eventsRaw)){
-				$events = unserialize($eventsRaw);
-			}
-			$this->events = $events;
-		}
-		foreach ($this->events as $event){
-			/** @var Event $event */
-			$this->keyToIdxMap[$event->getKey()] = $event->getId();
+		if (!$this->loaded){
+			$this->loadDataFromFile();
 		}
 		return $this->events;
 	}
 
-	protected function saveEventsToFile()
+	protected function getPerformers()
+	{
+		if (!$this->loaded){
+			$this->loadDataFromFile();
+		}
+		return $this->performers;
+	}
+
+	protected function loadDataFromFile()
+	{
+		$dataRaw = file_get_contents($this->fileName);
+		if ($dataRaw !== false && !empty($dataRaw)){
+			$data = unserialize($dataRaw);
+			if (is_array($data)){
+				$version = 0;
+				if (isset($data[self::KEY_VERSION])){
+					$version = $data[self::KEY_VERSION];
+				}
+				switch ($version){
+					case 1:
+						$this->readVersion1($data);
+						break;
+					default;
+						$this->readVersion0($data);
+						break;
+				}
+			}
+		}
+		$this->loaded = true;
+	}
+
+	protected function readVersion0($data)
+	{
+		$this->events		= $data;
+		$this->performers	= array();
+		$this->initKeyMap();
+	}
+
+	protected function readVersion1($data)
+	{
+		$this->events		= $data[self::KEY_EVENTS];
+		$this->performers	= $data[self::KEY_PERFORMERS];
+		$this->initKeyMap();
+	}
+
+	protected function initKeyMap()
+	{
+		foreach ($this->events as $event){
+			/** @var Event $event */
+			$this->keyToIdxMap[$event->getKey()] = $event->getId();
+		}
+	}
+
+	protected function saveDataToFile()
 	{
 		printf("writing to file [%s]\n", $this->fileName);
-		file_put_contents($this->fileName, serialize($this->events));
+		$data = array(
+			self::KEY_VERSION		=> self::CURRENT_VERSION,
+			self::KEY_EVENTS		=> $this->events,
+			self::KEY_PERFORMERS	=> $this->performers,
+		);
+		file_put_contents($this->fileName, serialize($data));
 	}
 }

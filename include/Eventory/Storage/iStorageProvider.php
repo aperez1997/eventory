@@ -1,12 +1,13 @@
 <?php
 /**
- * @author Tony Perez <tonyp@zoosk.com>
+ * @author Tony Perez <aperez1997@yahoo.com>
  * @copyright Copyright (c) 2007-2013 Zoosk Inc.
  */
 
 namespace Eventory\Storage;
 
 use Eventory\Objects\Event\Event;
+use Eventory\Objects\Performers\Performer;
 
 interface iStorageProvider
 {
@@ -28,15 +29,32 @@ interface iStorageProvider
 	public function loadEventByKey($key);
 
 	/**
-	 * @param $performerId
-	 * @return array Event
-	 */
-	public function loadEventsByPerformer($performerId);
-
-	/**
 	 * @param int|null $maxCount
 	 * @param int|null $offset
 	 * @return array Event
 	 */
 	public function loadRecentEvents($maxCount = null, $offset = null);
+
+	/**
+	 * @param string $name
+	 * @return Performer
+	 */
+	public function createPerformer($name);
+
+	/**
+	 * @param string $performerId
+	 * @return Performer
+	 */
+	public function loadPerformerById($performerId);
+
+	/**
+	 * @param string $name
+	 * @return Performer
+	 */
+	public function loadPerformerByName($name);
+
+	/**
+	 * @return array of Performer
+	 */
+	public function loadAllPerformers();
 }
