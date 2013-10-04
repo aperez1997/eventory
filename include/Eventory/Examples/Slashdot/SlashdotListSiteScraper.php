@@ -11,7 +11,7 @@ use Eventory\Utils\HttpUtils;
  */
 class SlashdotListSiteScraper extends EventListSiteScraperV1
 {
-	protected $maxToScrape = 6;
+	protected $maxToScrape = 2;
 
 	protected function getListSiteUrl()
 	{
@@ -27,7 +27,11 @@ class SlashdotListSiteScraper extends EventListSiteScraperV1
 
 	protected function getEventHrefFromNode(\simple_html_dom_node $htmlNode)
 	{
-		return 'http:'.$htmlNode->href;
+		$href = $htmlNode->href;
+
+		$pattern = '/' . preg_quote('//', '/'). '(.*?)\?/';
+		preg_match($pattern, $href, $matches);
+		return 'http://' . $matches[1];
 	}
 
 	public function getEventIdFromNode(\simple_html_dom_node $htmlNode)

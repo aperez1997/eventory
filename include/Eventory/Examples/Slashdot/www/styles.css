@@ -1,0 +1,14 @@
+.nav li {
+    display: inline-block;
+    width: 20%;
+}
+
+li.thumb {
+    width: 20%;
+    min-width: 100px;
+    display: inline-block;
+}
+
+li.thumb img {
+    width: 99%;
+}

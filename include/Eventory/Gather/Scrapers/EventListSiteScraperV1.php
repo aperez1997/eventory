@@ -34,10 +34,6 @@ abstract class EventListSiteScraperV1
 		$events = array();
 		foreach ($scrapeItems as $scrapeItem){
 			/** @var EventScrapeItem $scrapeItem */
-			if (isset($maxToScrape)){
-				if ($maxToScrape-- <= 0) break;
-			}
-
 			$eventSiteScraper = $this->siteScraperFactory->getSiteScraperForScrapeItem($scrapeItem);
 			if (!$eventSiteScraper instanceof EventSiteScraperV1){
 				printf("item [%s] does not map to a site scraper\n", print_r($scrapeItem, true));
@@ -50,6 +46,9 @@ abstract class EventListSiteScraperV1
 			}
 			$event = $eventSiteScraper->scrapeFromWeb($scrapeItem, $existingEvent);
 			$events[$event->getKey()] = $event;
+
+			if (isset($maxToScrape) && --$maxToScrape <= 0) break;
+
 			usleep(1000000 / $this->ratePerSecond);
 		}
 		return $events;
