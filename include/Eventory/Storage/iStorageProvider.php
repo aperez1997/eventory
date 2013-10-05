@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Tony Perez <aperez1997@yahoo.com>
- * @copyright Copyright (c) 2007-2013 Zoosk Inc.
+
  */
 
 namespace Eventory\Storage;
@@ -11,6 +11,13 @@ use Eventory\Objects\Performers\Performer;
 
 interface iStorageProvider
 {
+	/**
+	 * @param $url
+	 * @param $key
+	 * @return Event
+	 */
+	public function createEvent($url, $key);
+
 	/**
 	 * @param array $events		array of Event
 	 */

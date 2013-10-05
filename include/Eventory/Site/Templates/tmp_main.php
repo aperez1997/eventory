@@ -10,7 +10,7 @@
 <?php include __DIR__ . '/tmp_nav.php'; ?>
 
 <!-- content -->
-<?php global $content; echo $content; ?>
+<?php echo $mainContent; ?>
 
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Tony Perez <aperez1997@yahoo.com>
- * @copyright Copyright (c) 2007-2013 Zoosk Inc.
+
  */
 
 namespace Eventory\Objects\Event;
@@ -11,9 +11,17 @@ use Eventory\Objects\Performers\Performer;
 
 class Event
 {
+	public static function CreateNew($url, $key)
+	{
+		$event = new Event();
+		$event->eventUrl = $url;
+		$event->eventKey = $key;
+		return $event;
+	}
+
 	public $id;
-	public $eventKey;
-	public $eventUrl;
+	protected $eventKey;
+	protected $eventUrl;
 	public $description;
 
 	/** @var array EventAsset */
@@ -24,6 +32,8 @@ class Event
 
 	/** @var array string */
 	protected $subUrls = array();
+
+	protected function __construct(){}
 
 	public function getId()
 	{
@@ -62,10 +72,11 @@ class Event
 		return array_keys($this->subUrls);
 	}
 
-	public function addPerformerId(Performer $performer)
+	public function addPerformer(Performer $performer)
 	{
 		$id = $performer->getId();
-		$this->performerIds[$id] = $id;
+		$this->performerIds[$id] = $performer->getName();
+		$performer->addEventId($this->id);
 	}
 
 	public function getPerformerIds()

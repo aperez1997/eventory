@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Tony Perez <aperez1997@yahoo.com>
- * @copyright Copyright (c) 2007-2013 Zoosk Inc.
+
  */
 
 namespace Eventory\Storage\File;
@@ -36,6 +36,25 @@ class StorageProviderSerialized implements iStorageProvider
 	}
 
 	/**
+	 * @param $url
+	 * @param $key
+	 * @return Event
+	 */
+	public function createEvent($url, $key)
+	{
+		$lookup = $this->loadEventByKey($key);
+		if ($lookup instanceof Event){
+			return $lookup;
+		}
+
+		$event = Event::CreateNew($url, $key);
+		$id = count($this->events) + 1;
+		$event->id = $id;
+		$this->events[$id] = $event;
+		return $event;
+	}
+
+	/**
 	 * @param array $events		array of Event
 	 */
 	public function saveEvents(array $events)
@@ -44,18 +63,7 @@ class StorageProviderSerialized implements iStorageProvider
 		foreach ($events as $event){
 			/** @var Event $event */
 			$id = $event->getId();
-			if ($id === null){
-				$id = count($this->events) + 1;
-				$event->id = $id;
-			}
 			$this->events[$id] = $event;
-
-			// make sure performer event ids are sane
-			$performerIds = $event->getPerformerIds();
-			foreach ($performerIds as $performerId){
-				$performer = $this->loadPerformerById($performerId);
-				$performer->addEventId($id);
-			}
 		}
 		// will also save performers!
 		$this->saveDataToFile();

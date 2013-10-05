@@ -1,3 +1,7 @@
+table.events {
+    border: 1px solid black;
+}
+
 .nav li {
     display: inline-block;
     width: 20%;
@@ -11,4 +15,8 @@ li.thumb {
 
 li.thumb img {
     width: 99%;
+}
+
+.stripe {
+    background-color: #EEEEEE;
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Tony Perez <aperez1997@yahoo.com>
- * @copyright Copyright (c) 2007-2013 Zoosk Inc.
+
  */
 
 namespace Eventory\Gather\Scrapers;
@@ -60,9 +60,7 @@ abstract class EventSiteScraperV1
 			}
 		} else {
 			// completely new event
-			$this->event = new Event();
-			$this->event->eventUrl		= $this->eventScrapeItem->eventUrl;
-			$this->event->eventKey		= $this->eventScrapeItem->eventKey;
+			$this->event = $this->store->createEvent($this->eventScrapeItem->eventUrl, $this->eventScrapeItem->eventKey);
 		}
 
 		// update event with new data

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Tony Perez <aperez1997@yahoo.com>
- * @copyright Copyright (c) 2007-2013 Zoosk Inc.
+
  */
 
 namespace Eventory\Site\Browse;
@@ -19,10 +19,9 @@ class SiteBrowseRecentEvents extends SitePageBase
 			$offset = $params['o'];
 		}
 
-		global $events;
 		$events = $this->store->loadRecentEvents($maxPerPage, $offset);
 
-		$content = $this->renderContent($this->getTemplatesPath() . 'tmp_browse_recent.php');
+		$content = $this->renderContent($this->getTemplatesPath() . 'tmp_browse_recent_events.php', $events);
 
 		return $this->renderMain($content);
 	}
