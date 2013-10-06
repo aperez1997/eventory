@@ -24,6 +24,8 @@ abstract class EventSiteScraperV1
 	/** @var iStorageProvider */
 	protected $store;
 
+	protected $ratePerSecond = 10;
+
 	public function __construct(iStorageProvider $store)
 	{
 		$this->store = $store;
@@ -46,7 +48,6 @@ abstract class EventSiteScraperV1
 	protected function parseIntoEvent()
 	{
 		$subUrl = $this->eventScrapeItem->eventUrl;
-		$this->htmlDom = file_get_html($subUrl);
 
 		if (!$this->event instanceof Event){
 			// not sent; try to find it
@@ -63,9 +64,14 @@ abstract class EventSiteScraperV1
 			$this->event = $this->store->createEvent($this->eventScrapeItem->eventUrl, $this->eventScrapeItem->eventKey);
 		}
 
+		$this->htmlDom = file_get_html($subUrl);
+
 		// update event with new data
 		$this->event->addSubUrls(array($this->eventScrapeItem->eventUrl));
 		$this->event->addAssets($this->parseGetAssets());
+
+		usleep(1000000 / $this->ratePerSecond);
+
 		return;
 	}
 
