@@ -47,7 +47,9 @@ abstract class EventListSiteScraperV1
 			$event = $eventSiteScraper->scrapeFromWeb($scrapeItem, $existingEvent);
 			$events[$event->getKey()] = $event;
 
-			if (isset($maxToScrape) && --$maxToScrape <= 0) break;
+			if (isset($maxToScrape)){
+				if (--$maxToScrape <= 0) break;
+			}
 
 			usleep(1000000 / $this->ratePerSecond);
 		}
