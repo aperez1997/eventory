@@ -230,12 +230,11 @@ class StorageProviderSerialized implements iStorageProvider
 		foreach ($data as $event){
 			/** @var Event $event */
 			if ($event->getKey()) continue;
-			/** @var EventAsset $asset */
-			$assets = $event->getAssets();
-			if (empty($assets)) continue;
-			$asset = reset($assets);
-			$event->setKey($asset->key);
-			$event->setUrl($asset->hostUrl);
+			if (isset($event['eventKey'])){
+				$event->setKey($event['eventKey']);
+			}
+			$subUrls = $event->getSubUrls();
+			$event->setUrl(reset($subUrls));
 		}
 		$this->events		= $data;
 		$this->performers	= array();
