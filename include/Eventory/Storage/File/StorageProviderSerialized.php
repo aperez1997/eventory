@@ -231,7 +231,9 @@ class StorageProviderSerialized implements iStorageProvider
 			/** @var Event $event */
 			if ($event->getKey()) continue;
 			/** @var EventAsset $asset */
-			list($asset) = $event->getAssets();
+			$assets = $event->getAssets();
+			if (empty($assets)) continue;
+			$asset = reset($assets);
 			$event->setKey($asset->key);
 			$event->setUrl($asset->hostUrl);
 		}
