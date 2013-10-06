@@ -21,13 +21,9 @@ abstract class EventListSiteScraperV1
 
 	protected $content;
 
-	protected $maxToScrape = null;
-
 	public function scrapeFromWeb()
 	{
 		$scrapeItems = $this->scrapeFromWebIntoScrapeItems();
-
-		$maxToScrape = $this->maxToScrape;
 
 		$events = array();
 		foreach ($scrapeItems as $scrapeItem){
@@ -44,10 +40,6 @@ abstract class EventListSiteScraperV1
 			}
 			$event = $eventSiteScraper->scrapeFromWeb($scrapeItem, $existingEvent);
 			$events[$event->getKey()] = $event;
-
-			if (isset($maxToScrape)){
-				if (--$maxToScrape <= 0) break;
-			}
 		}
 		return $events;
 	}

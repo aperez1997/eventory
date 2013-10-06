@@ -24,6 +24,7 @@ abstract class EventSiteScraperV1
 	/** @var iStorageProvider */
 	protected $store;
 
+	protected $maxToScrape = null;
 	protected $ratePerSecond = 10;
 
 	public function __construct(iStorageProvider $store)
@@ -64,6 +65,7 @@ abstract class EventSiteScraperV1
 			$this->event = $this->store->createEvent($this->eventScrapeItem->eventUrl, $this->eventScrapeItem->eventKey);
 		}
 
+		if (isset($this->maxToScrape)) $this->maxToScrape--;
 		$this->htmlDom = file_get_html($subUrl);
 
 		// update event with new data
@@ -78,6 +80,19 @@ abstract class EventSiteScraperV1
 	protected function findEventByKey()
 	{
 		return $this->store->loadEventByKey($this->eventScrapeItem->eventKey);
+	}
+
+	public function setMaxToScrape($num)
+	{
+		$this->maxToScrape = $num;
+	}
+
+	public function doneScraping()
+	{
+		if (!isset($this->maxToScrape)){
+			return false;
+		}
+		return $this->maxToScrape > 0;
 	}
 
 	/**

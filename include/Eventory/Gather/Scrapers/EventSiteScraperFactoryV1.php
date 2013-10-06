@@ -12,10 +12,12 @@ use Eventory\Storage\iStorageProvider;
 abstract class EventSiteScraperFactoryV1
 {
 	protected $store;
+	protected $maxToScrape;
 
-	public function __construct(iStorageProvider $store)
+	public function __construct(iStorageProvider $store, $maxToScrape = null)
 	{
 		$this->store = $store;
+		$this->maxToScrape = $maxToScrape;
 	}
 
 	/**
