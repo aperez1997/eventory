@@ -20,8 +20,8 @@ class Event
 	}
 
 	public $id;
-	protected $eventKey;
-	protected $eventUrl;
+	public $eventKey;
+	public $eventUrl;
 	public $description;
 
 	/** @var array EventAsset */

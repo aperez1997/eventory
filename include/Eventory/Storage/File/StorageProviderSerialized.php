@@ -227,15 +227,6 @@ class StorageProviderSerialized implements iStorageProvider
 
 	protected function readVersion0($data)
 	{
-		foreach ($data as $event){
-			/** @var Event $event */
-			if ($event->getKey()) continue;
-			if (isset($event['eventKey'])){
-				$event->setKey($event['eventKey']);
-			}
-			$subUrls = $event->getSubUrls();
-			$event->setUrl(reset($subUrls));
-		}
 		$this->events		= $data;
 		$this->performers	= array();
 		$this->initKeyMap();
