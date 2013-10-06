@@ -21,8 +21,6 @@ abstract class EventListSiteScraperV1
 
 	protected $content;
 
-	protected $ratePerSecond = 10;
-
 	protected $maxToScrape = null;
 
 	public function scrapeFromWeb()
@@ -50,8 +48,6 @@ abstract class EventListSiteScraperV1
 			if (isset($maxToScrape)){
 				if (--$maxToScrape <= 0) break;
 			}
-
-			usleep(1000000 / $this->ratePerSecond);
 		}
 		return $events;
 	}
