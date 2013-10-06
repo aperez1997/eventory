@@ -45,6 +45,10 @@ class Event
 		return $this->eventKey;
 	}
 
+	public function setKey($key){
+		$this->eventKey = $key;
+	}
+
 	public function addAssets($assets)
 	{
 		foreach ($assets as $asset){
