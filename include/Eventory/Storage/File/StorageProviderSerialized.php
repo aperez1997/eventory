@@ -115,6 +115,7 @@ class StorageProviderSerialized implements iStorageProvider
 		$performer = Performer::CreateNew($name);
 		$id = count($this->performers) + 1;
 		$performer->id = $id;
+		$this->performers[$id] = $performer;
 		return $performer;
 	}
 
