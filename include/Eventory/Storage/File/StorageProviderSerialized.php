@@ -6,6 +6,7 @@
 
 namespace Eventory\Storage\File;
 
+use Eventory\Objects\Event\Assets\EventAsset;
 use Eventory\Objects\Event\Event;
 use Eventory\Objects\Performers\Performer;
 use Eventory\Storage\iStorageProvider;
@@ -228,9 +229,11 @@ class StorageProviderSerialized implements iStorageProvider
 	{
 		foreach ($data as $event){
 			/** @var Event $event */
-			if (isset($event->eventIdentifier)){
-				$event->setKey($event->eventIdentifier);
-			}
+			if ($event->getKey()) continue;
+			/** @var EventAsset $asset */
+			list($asset) = $event->getAssets();
+			$event->setKey($asset->key);
+			$event->setUrl($asset->hostUrl);
 		}
 		$this->events		= $data;
 		$this->performers	= array();

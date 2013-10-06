@@ -49,6 +49,11 @@ class Event
 		$this->eventKey = $key;
 	}
 
+	public function setUrl($url)
+	{
+		$this->eventUrl = $url;
+	}
+
 	public function addAssets($assets)
 	{
 		foreach ($assets as $asset){
