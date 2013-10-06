@@ -17,6 +17,7 @@ class Performer
 
 	public $id;
 	protected $name;
+	protected $imageUrl;
 	protected $eventIds;
 	protected $updated;
 
@@ -33,6 +34,16 @@ class Performer
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	public function getImageUrl()
+	{
+		return $this->imageUrl;
+	}
+
+	public function setImageUrl($url)
+	{
+		$this->imageUrl = $url;
 	}
 
 	public function getEventIds()

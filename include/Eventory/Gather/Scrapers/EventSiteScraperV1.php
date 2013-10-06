@@ -41,7 +41,7 @@ abstract class EventSiteScraperV1
 	{
 		$this->eventScrapeItem	= $item;
 		$this->event			= $existingEvent;
-		printf("scraping [%s]\n", $this->eventScrapeItem->eventUrl);
+		printf("scraping [%s] Left[%s]\n", $this->eventScrapeItem->eventUrl, $this->maxToScrape);
 		$this->parseIntoEvent();
 		return $this->event;
 	}
@@ -92,7 +92,7 @@ abstract class EventSiteScraperV1
 		if (!isset($this->maxToScrape)){
 			return false;
 		}
-		return $this->maxToScrape > 0;
+		return $this->maxToScrape <= 0;
 	}
 
 	/**

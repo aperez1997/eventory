@@ -117,4 +117,9 @@ class Event
 	{
 		return $this->updated;
 	}
+
+	public function setUpdated($u)
+	{
+		$this->updated = $u;
+	}
 }

@@ -11,7 +11,7 @@ foreach ($events as $event){
 
 	$eventDay = date('m-d-Y', $event->getUpdated());
 
-	if (isset($lastEventDay) && $lastEventDay != $eventDay){
+	if (!isset($lastEventDay) || $lastEventDay != $eventDay){
 		echo "<tr class='date-row'><td><h1>{$eventDay}</h1></td></tr>\n";
 	}
 

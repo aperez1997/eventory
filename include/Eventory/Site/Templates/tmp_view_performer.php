@@ -14,6 +14,11 @@ $name = $performer->getName();
 $id = $performer->getId();
 echo "<h1>{$name} #{$id}</h1>";
 
+$img = $performer->getImageUrl();
+if ($img){
+	echo "<img src='{$img}'/><br>\n";
+}
+
 $events = $page->getStorageProvider()->loadEventsById($performer->getEventIds());
 
 echo "Events:<br>\n";
