@@ -2,6 +2,11 @@ table.events {
     border: 1px solid black;
 }
 
+.date-row {
+    background-color: #DDDDDD;
+    height: 50px;
+}
+
 .nav li {
     display: inline-block;
     width: 20%;

@@ -6,6 +6,9 @@ use Eventory\Objects\Event\Event;
 /** @var $event Event */
 $eventKey = $event->getKey();
 $description = $event->description;
+$f = 'm-d-Y ga';
+$created = date($f, $event->getCreated());
+$updated = date($f, $event->getUpdated());
 
 $assetContent = '';
 foreach ($event->getAssets() as $asset){
@@ -36,7 +39,8 @@ if ($performerContent){
 }
 
 $output = "
-<h1>{$eventKey}</h1> #{$event->getId()}
+<h1>{$eventKey}</h1>
+<div>[#{$event->getId()}] Created: {$created}, Updated: {$updated}</div>
 <p>{$description}</p>
 {$assetContent}
 {$urlContent}

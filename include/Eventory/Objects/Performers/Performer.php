@@ -18,6 +18,12 @@ class Performer
 	public $id;
 	protected $name;
 	protected $eventIds;
+	protected $updated;
+
+	protected function __construct()
+	{
+		$this->updated = time();
+	}
 
 	public function getId()
 	{
@@ -36,6 +42,7 @@ class Performer
 
 	public function addEventId($eventId)
 	{
+		$this->updated = time();
 		$this->eventIds[$eventId] = $eventId;
 	}
 
@@ -44,5 +51,10 @@ class Performer
 		foreach ($eventIds as $eventId){
 			$this->addEventId($eventId);
 		}
+	}
+
+	public function getUpdated()
+	{
+		return $this->updated;
 	}
 }

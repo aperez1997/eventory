@@ -23,6 +23,8 @@ class Event
 	public $eventKey;
 	public $eventUrl;
 	public $description;
+	protected $created;
+	protected $updated;
 
 	/** @var array EventAsset */
 	public $assets = array();
@@ -33,7 +35,11 @@ class Event
 	/** @var array string */
 	protected $subUrls = array();
 
-	protected function __construct(){}
+	protected function __construct()
+	{
+		$this->created = time();
+		$this->updated = time();
+	}
 
 	public function getId()
 	{
@@ -56,6 +62,7 @@ class Event
 
 	public function addAssets($assets)
 	{
+		$this->updated = time();
 		foreach ($assets as $asset){
 			/** @var EventAsset $asset */
 			$this->assets[$asset->key] = $asset;
@@ -65,6 +72,7 @@ class Event
 
 	public function addSubUrls(array $subUrls)
 	{
+		$this->updated = time();
 		foreach ($subUrls as $subUrl){
 			$this->subUrls[$subUrl] = $subUrl;
 		}
@@ -83,6 +91,7 @@ class Event
 
 	public function addPerformer(Performer $performer)
 	{
+		$this->updated = time();
 		$id = $performer->getId();
 		$this->performerIds[$id] = $performer->getName();
 		$performer->addEventId($this->id);
@@ -91,5 +100,21 @@ class Event
 	public function getPerformerIds()
 	{
 		return $this->performerIds;
+	}
+
+	public function getCreated()
+	{
+		return $this->created;
+	}
+
+	public function setCreated($created)
+	{
+		$this->created = $created;
+		$this->updated = $created;
+	}
+
+	public function getUpdated()
+	{
+		return $this->updated;
 	}
 }

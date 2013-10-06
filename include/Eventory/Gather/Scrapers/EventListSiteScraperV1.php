@@ -40,6 +40,10 @@ abstract class EventListSiteScraperV1
 			}
 			$event = $eventSiteScraper->scrapeFromWeb($scrapeItem, $existingEvent);
 			$events[$event->getKey()] = $event;
+
+			if ($eventSiteScraper->doneScraping()){
+				break;
+			}
 		}
 		return $events;
 	}

@@ -220,6 +220,7 @@ class StorageProviderSerialized implements iStorageProvider
 						$this->readVersion0($data);
 						break;
 				}
+				$this->initKeyMap();
 			}
 		}
 		$this->loaded = true;
@@ -229,14 +230,19 @@ class StorageProviderSerialized implements iStorageProvider
 	{
 		$this->events		= $data;
 		$this->performers	= array();
-		$this->initKeyMap();
 	}
 
 	protected function readVersion1($data)
 	{
 		$this->events		= $data[self::KEY_EVENTS];
 		$this->performers	= $data[self::KEY_PERFORMERS];
-		$this->initKeyMap();
+	}
+
+	protected function fixMissingDataEvent(Event $event)
+	{
+		if (!is_int($event->getCreated()) || $event->getCreated() <= 0){
+			$event->setCreated(strtotime('2013-10-01'));
+		}
 	}
 
 	protected function initKeyMap()
@@ -244,6 +250,7 @@ class StorageProviderSerialized implements iStorageProvider
 		foreach ($this->events as $event){
 			/** @var Event $event */
 			$this->keyToIdxMap[$event->getKey()] = $event->getId();
+			$this->fixMissingDataEvent($event);
 		}
 	}
 
