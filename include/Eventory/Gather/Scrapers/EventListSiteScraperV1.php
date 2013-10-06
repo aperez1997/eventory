@@ -61,8 +61,18 @@ abstract class EventListSiteScraperV1
 	 */
 	public function scrapeFromWebIntoScrapeItems()
 	{
-		$source = $this->getListSiteUrl();
-		return $this->parseIntoEventScrapeItems($source);
+		$sources = $this->getListSiteUrl();
+		if (!is_array($sources)){
+			$sources = array($sources);
+		}
+
+		$scrapeItems = array();
+		foreach ($sources as $source){
+			$newItems = $this->parseIntoEventScrapeItems($source);
+			$scrapeItems = array_merge($scrapeItems, $newItems);
+		}
+
+		return $scrapeItems;
 	}
 
 	/**
@@ -82,7 +92,7 @@ abstract class EventListSiteScraperV1
 			$href = $this->getEventHrefFromNode($htmlNode);
 			$id = $this->getEventIdFromNode($htmlNode);
 			$scrapeItem = $this->createEventScrapeItem($href, $id);
-			$scrapeItems[] = $scrapeItem;
+			$scrapeItems[$href] = $scrapeItem;
 		}
 		return $scrapeItems;
 	}
