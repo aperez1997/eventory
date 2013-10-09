@@ -38,8 +38,8 @@ class TextUtils
 		'the', 'this', 'then', 'these',
 		'stay',
 		'who', 'what', 'where', 'when', 'why',
-		'once', 'initially', 'soon', 'until',
-		'at', 'ask', 'after',
-		'giving',
+		'once', 'initially', 'eventually', 'soon', 'until',
+		'at', 'ask', 'after', 'by', 'to', 'my',
+		'giving', 'luckily', 
 	);
 }

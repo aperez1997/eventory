@@ -32,6 +32,7 @@ class StorageProviderSerialized implements iStorageProvider
 		$this->fileName		= $fileName;
 		$this->events		= array();
 		$this->performers	= array();
+		$this->performersHigh	= array();
 		$this->keyToIdxMap	= array();
 		$this->loaded		= false;
 	}
@@ -180,7 +181,17 @@ class StorageProviderSerialized implements iStorageProvider
 		if (!isset($offset)){
 			$offset = 0;
 		}
-		$events = $this->getEvents();
+		$events = array();
+		foreach ($this->getEvents() as $event){
+			$sortKey = $event->getSortKey();
+			$high = false;
+			foreach ($event->getPerformerIds() as $id => $name){
+				if (isset($this->performersHigh[$id])) $high = true;
+			}
+			if ($high) $sortKey += 3600;
+			$events[strval($sortKey . $event->getId())] = $event;
+		}
+		ksort($events);
 		$events = array_reverse($events);
 		$events = array_slice($events, $offset, $maxCount);
 		return $events;
@@ -251,6 +262,11 @@ class StorageProviderSerialized implements iStorageProvider
 			/** @var Event $event */
 			$this->keyToIdxMap[$event->getKey()] = $event->getId();
 			$this->fixMissingDataEvent($event);
+		}
+		foreach ($this->performers as $performer){
+			if ($performer->isHighlighted()){
+				$this->performersHigh[$performer->getId()] = $performer;
+			}
 		}
 	}
 

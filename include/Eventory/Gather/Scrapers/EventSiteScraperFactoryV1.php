@@ -13,15 +13,17 @@ abstract class EventSiteScraperFactoryV1
 {
 	protected $store;
 	protected $maxToScrape;
+	protected $ratePerSecond;
 	protected $siteScrapers;
 
-	public function __construct(iStorageProvider $store, $maxToScrape = null)
+	public function __construct(iStorageProvider $store, $maxToScrape = null, $ratePerSecond = null)
 	{
 		if (isset($maxToScrape)){
 			$maxToScrape = intval($maxToScrape);
 		}
 		$this->store = $store;
 		$this->maxToScrape = $maxToScrape;
+		$this->ratePerSecond = $ratePerSecond;
 		$this->siteScrapers = array();
 	}
 
@@ -38,6 +40,9 @@ abstract class EventSiteScraperFactoryV1
 			$this->siteScrapers[$class] = $scraper;
 			if ($this->maxToScrape){
 				$scraper->setMaxToScrape($this->maxToScrape);
+			}
+			if (isset($this->ratePerSecond)){
+				$scraper->setRatePerSecond($this->ratePerSecond);
 			}
 		}
 		return $this->siteScrapers[$class];

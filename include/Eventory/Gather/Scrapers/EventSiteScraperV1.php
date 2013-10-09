@@ -87,6 +87,11 @@ abstract class EventSiteScraperV1
 		$this->maxToScrape = $num;
 	}
 
+	public function setRatePerSecond($rate)
+	{
+		$this->ratePerSecond = $rate;
+	}
+
 	public function doneScraping()
 	{
 		if (!isset($this->maxToScrape)){

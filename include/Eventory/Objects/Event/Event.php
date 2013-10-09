@@ -122,4 +122,10 @@ class Event
 	{
 		$this->updated = $u;
 	}
+
+	public function getSortKey()
+	{
+		$assetFactor = count($this->assets) * 360;
+		return $this->updated + $assetFactor;
+	}
 }
