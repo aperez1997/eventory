@@ -22,11 +22,13 @@ class Performer
 	protected $highlight;
 	protected $eventIds;
 	protected $updated;
+	protected $deleted;
 
 	protected function __construct()
 	{
 		$this->updated = time();
 		$this->siteUrls = array();
+		$this->eventIds = array();
 	}
 
 	public function getId()
@@ -61,7 +63,7 @@ class Performer
 
 	public function getEventIds()
 	{
-		return $this->eventIds;
+		return $this->eventIds ? $this->eventIds : array();
 	}
 
 	public function addSiteUrl($url)
@@ -99,5 +101,15 @@ class Performer
 	{
 		$bit = $this->highlight ? '1' : '0';
 		return intval($bit . $this->updated);
+	}
+
+	public function isDeleted()
+	{
+		return $this->deleted == true;
+	}
+
+	public function setDeleted()
+	{
+		$this->deleted = true;
 	}
 }

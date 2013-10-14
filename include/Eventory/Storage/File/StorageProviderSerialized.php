@@ -105,6 +105,36 @@ class StorageProviderSerialized implements iStorageProvider
 	}
 
 	/**
+	 * @param int|null $maxCount
+	 * @param int|null $offset
+	 * @return array Event
+	 */
+	public function loadRecentEvents($maxCount = null, $offset = null)
+	{
+		if (!isset($maxCount)){
+			$maxCount = 50;
+		}
+		if (!isset($offset)){
+			$offset = 0;
+		}
+		$events = array();
+		foreach ($this->getEvents() as $event){
+			/** @var Event $event */
+			$sortKey = $event->getSortKey();
+			$high = false;
+			foreach ($event->getPerformerIds() as $id => $name){
+				if (isset($this->performersHigh[$id])) $high = true;
+			}
+			if ($high) $sortKey += 3600;
+			$events[strval($sortKey . $event->getId())] = $event;
+		}
+		ksort($events);
+		$events = array_reverse($events);
+		$events = array_slice($events, $offset, $maxCount);
+		return $events;
+	}
+
+	/**
 	 * @param string $name
 	 * @return Performer
 	 */
@@ -169,32 +199,27 @@ class StorageProviderSerialized implements iStorageProvider
 	}
 
 	/**
-	 * @param int|null $maxCount
-	 * @param int|null $offset
-	 * @return array Event
+	 * @param $id
+	 * @return bool
 	 */
-	public function loadRecentEvents($maxCount = null, $offset = null)
+	public function deletePerformer($id)
 	{
-		if (!isset($maxCount)){
-			$maxCount = 50;
+		$performer = $this->loadPerformerById($id);
+		if (!$performer instanceof Performer){
+			return false;
 		}
-		if (!isset($offset)){
-			$offset = 0;
+
+		$performer->setDeleted();
+
+		$events = $this->loadEventsById($performer->getEventIds());
+		foreach ($events as $event){
+			/** @var Event $event */
+			$event->removePerformer($performer);
 		}
-		$events = array();
-		foreach ($this->getEvents() as $event){
-			$sortKey = $event->getSortKey();
-			$high = false;
-			foreach ($event->getPerformerIds() as $id => $name){
-				if (isset($this->performersHigh[$id])) $high = true;
-			}
-			if ($high) $sortKey += 3600;
-			$events[strval($sortKey . $event->getId())] = $event;
-		}
-		ksort($events);
-		$events = array_reverse($events);
-		$events = array_slice($events, $offset, $maxCount);
-		return $events;
+
+		$this->saveDataToFile();
+
+		return true;
 	}
 
 	protected function getEvents()
@@ -264,6 +289,7 @@ class StorageProviderSerialized implements iStorageProvider
 			$this->fixMissingDataEvent($event);
 		}
 		foreach ($this->performers as $performer){
+			/** @var Performer $performer */
 			if ($performer->isHighlighted()){
 				$this->performersHigh[$performer->getId()] = $performer;
 			}

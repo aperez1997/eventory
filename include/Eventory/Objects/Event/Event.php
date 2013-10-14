@@ -91,10 +91,20 @@ class Event
 
 	public function addPerformer(Performer $performer)
 	{
+		if ($performer->isDeleted()){
+			return;
+		}
+
 		$this->updated = time();
 		$id = $performer->getId();
 		$this->performerIds[$id] = $performer->getName();
 		$performer->addEventId($this->id);
+	}
+
+	public function removePerformer(Performer $performer)
+	{
+		$id = $performer->getId();
+		unset($this->performerIds[$id]);
 	}
 
 	public function getPerformerIds()

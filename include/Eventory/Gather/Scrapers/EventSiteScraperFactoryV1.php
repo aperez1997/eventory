@@ -36,6 +36,7 @@ abstract class EventSiteScraperFactoryV1
 	protected function createScraper($class)
 	{
 		if (!isset($this->siteScrapers[$class])){
+			/** @var EventSiteScraperV1 $scraper */
 			$scraper = new $class($this->store);
 			$this->siteScrapers[$class] = $scraper;
 			if ($this->maxToScrape){

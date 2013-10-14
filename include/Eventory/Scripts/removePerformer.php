@@ -2,17 +2,21 @@
 
 require_once __DIR__ . '/../bootstrap.php';
 
-if ($argc < 1){
-	exit("not enough args\n");
+if ($argc < 2){
+	printf("Usage: %s <performerId>\n", __FILE__);
+	exit();
 }
 
 $store = getStoreProvider();
 
 $pId = $argv[1];
 
-$lookup = $store->loadPerformerById($pId);
-if (!isset($lookup)){
-	exit(sprintf("Not found [%s]\n", $pId));
+$rv = $store->deletePerformer($pId);
+
+if ($rv){
+	echo "success\n";
+} else {
+	echo "failed\n";
 }
 
-print "TODO\n";
+
