@@ -25,11 +25,25 @@ abstract class SitePageBase
 		return $this->store;
 	}
 
-	public function getLinkRecentEvents()
+	public function getLinkRecentEvents($offset = null)
 	{
 		$paramPage = SitePageParams::PAGE;
 		$pageViewRecent = SitePageType::RECENT;
-		return "?{$paramPage}={$pageViewRecent}";
+
+		$url = "?{$paramPage}={$pageViewRecent}";
+
+		if ($offset > 0){
+			$paramOffset = SitePageParams::OFFSET;
+			$url .= "&{$paramOffset}={$offset}";
+		}
+		return $url;
+	}
+
+	public function getLinkBrowsePerformers()
+	{
+		$paramPage = SitePageParams::PAGE;
+		$pageBrowsePerformers = SitePageType::BROWSE_PERFORMERS;
+		return "?{$paramPage}={$pageBrowsePerformers}";
 	}
 
 	public function getLinkPerformerView($performerId)

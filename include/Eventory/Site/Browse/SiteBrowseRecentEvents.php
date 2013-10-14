@@ -6,6 +6,7 @@
 
 namespace Eventory\Site\Browse;
 
+use Eventory\Site\Constants\SitePageParams;
 use Eventory\Site\SitePageBase;
 
 class SiteBrowseRecentEvents extends SitePageBase
@@ -15,13 +16,25 @@ class SiteBrowseRecentEvents extends SitePageBase
 		$maxPerPage = 100;
 		$offset = 0;
 
-		if (isset($params['o'])){
-			$offset = $params['o'];
+		$paramOffset = SitePageParams::OFFSET;
+		if (isset($params[$paramOffset])){
+			$offset = $params[$paramOffset];
 		}
 
 		$events = $this->store->loadRecentEvents($maxPerPage, $offset);
 
-		$content = $this->renderContent($this->getTemplatesPath() . 'tmp_browse_recent_events.php', $events);
+		$next = $this->getLinkRecentEvents($offset + $maxPerPage);
+
+		$vars = array(
+			'e' => $events,
+			'n' => $next,
+		);
+
+		if ($offset != 0){
+			$vars['p'] = $this->getLinkRecentEvents($offset - $maxPerPage);
+		}
+
+		$content = $this->renderContent($this->getTemplatesPath() . 'tmp_browse_recent_events.php', $vars);
 
 		return $this->renderMain($content);
 	}

@@ -7,6 +7,9 @@ require_once __DIR__ .'/bootstrap.php';
 $store = getStoreProvider();
 
 $performer1 = $store->createPerformer('Galileo Arduino');
+$performer2 = $store->createPerformer('Highlight halo');
+$performer2->setHighlight(true);
+
 
 $url1 = 'http://hardware.slashdot.org/story/13/10/04/1735248/intel-launches-galileo-an-arduino-compatible-mini-computer';
 $event1 = $store->createEvent($url1, 'key1');
@@ -23,4 +26,4 @@ $asset1->key = 'icon';
 $event1->addAssets(array($asset1));
 
 $store->saveEvents(array($event1));
-$store->savePerformers(array($performer1));
+$store->savePerformers(array($performer1, $performer2));

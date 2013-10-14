@@ -9,4 +9,5 @@ class SitePageParams
 {
 	const PAGE			= 'p';
 	const PERFORMER_ID 	= 'performer_id';
+	const OFFSET		= 'o';
 }

@@ -32,7 +32,7 @@ if ($urlContent){
 $performerContent = '';
 foreach ($event->getPerformerIds() as $pId => $pName){
 	$href = $page->getLinkPerformerView($pId);
-	$performerContent .= "<li><a href='{$href}'>{$pName}</a></li>\n";
+	$performerContent .= "<li><a href='{$href}' target='_blank'>{$pName}</a></li>\n";
 }
 if ($performerContent){
 	$performerContent = "<div>Performers:<ul>{$performerContent}</ul></div>\n";

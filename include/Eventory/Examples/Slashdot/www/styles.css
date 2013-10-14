@@ -12,6 +12,15 @@ table.events {
     width: 20%;
 }
 
+li.highlight {
+    font-weight: bold;
+    font-size: 1.05em;
+}
+
+li {
+   margin-bottom: 5px;
+}
+
 li.thumb {
     width: 20%;
     min-width: 100px;
@@ -24,4 +33,9 @@ li.thumb img {
 
 .stripe {
     background-color: #EEEEEE;
+}
+
+strong {
+    font-size: 1.5em;
+    margin-bottom: 5px;
 }

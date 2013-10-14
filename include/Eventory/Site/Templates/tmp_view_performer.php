@@ -26,8 +26,13 @@ foreach ($urls as $url){
 	echo "<li><a href='{$url}' target='_blank'>{$url}</a></li>\n";
 }
 
-$events = $page->getStorageProvider()->loadEventsById($performer->getEventIds());
-$events = array_reverse($events);
+$eventIds = $performer->getEventIds();
+if (!empty($eventIds)){
+	$events = $page->getStorageProvider()->loadEventsById($eventIds);
+	$events = array_reverse($events);
 
-echo "Events:<br>\n";
-require __DIR__ . '/tmp_events_table.php';
+	echo "Events:<br>\n";
+	require __DIR__ . '/tmp_events_table.php';
+} else {
+	echo "No events<br>";
+}

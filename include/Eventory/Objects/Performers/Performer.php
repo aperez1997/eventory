@@ -71,6 +71,9 @@ class Performer
 
 	public function getSiteUrls()
 	{
+		if (!is_array($this->siteUrls)){
+			return array();
+		}
 		return $this->siteUrls;
 	}
 
@@ -90,5 +93,11 @@ class Performer
 	public function getUpdated()
 	{
 		return $this->updated;
+	}
+
+	public function getSortKey()
+	{
+		$bit = $this->highlight ? '1' : '0';
+		return intval($bit . $this->updated);
 	}
 }

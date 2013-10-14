@@ -11,6 +11,7 @@ class SitePageType
 	const RECENT			= 'r';
 	const EVENT				= 'e';
 	const EVENT_EDIT		= 'ee';
+	const BROWSE_PERFORMERS	= 'bp';
 	const PERFORMER			= 'p';
 	const PERFORMER_EDIT	= 'pe';
 }

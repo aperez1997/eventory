@@ -5,6 +5,7 @@
 
 namespace Eventory\Site;
 
+use Eventory\Site\Browse\SiteBrowsePerformers;
 use Eventory\Site\Browse\SiteBrowseRecentEvents;
 use Eventory\Site\Constants\SitePageParams;
 use Eventory\Site\Constants\SitePageType;
@@ -24,6 +25,9 @@ class SitePageIndex extends SitePageBase
 		switch ($page){
 			case SitePageType::PERFORMER:
 				$pageObject = new SiteViewPerformer($this->store);
+				break;
+			case SitePageType::BROWSE_PERFORMERS:
+				$pageObject = new SiteBrowsePerformers($this->store);
 				break;
 			case SitePageType::RECENT:
 			default:
