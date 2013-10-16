@@ -34,12 +34,13 @@ class TextUtils
 	}
 
 	protected static $INVALID_FIRST_NAMES = array(
-		'but', 'however',
+		'but', 'however', 'if',
 		'the', 'this', 'then', 'these',
-		'stay',
+		'stay', 'well', 'with',
 		'who', 'what', 'where', 'when', 'why',
-		'once', 'initially', 'eventually', 'soon', 'until',
-		'at', 'ask', 'after', 'by', 'to', 'my',
-		'giving', 'luckily', 
+		'once', 'initially', 'eventually', 'soon', 'until', 'before', 'wenever',
+		'at', 'as', 'ask', 'after', 'by', 'to', 'my',
+		'giving', 'luckily',
+		'his', 'her', 'you', 'me', 'i', 'their', 'we', 
 	);
 }
