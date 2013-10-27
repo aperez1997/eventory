@@ -1,3 +1,4 @@
+<script src="event_table.js"></script>
 <table class='events'>
 <?php
 
@@ -15,7 +16,7 @@ foreach ($events as $event){
 		echo "<tr class='date-row'><td><h1>{$eventDay}</h1></td></tr>\n";
 	}
 
-	echo "<tr class='{$stripeClass}'><td>";
+	echo "<tr class='entry {$stripeClass}'><td>";
 	include __DIR__ . '/tmp_event_display.php';
 	echo "</td></tr>\n";
 

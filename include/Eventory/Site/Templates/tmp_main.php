@@ -2,7 +2,7 @@
 <head>
 
 	<LINK href="styles.css" rel="stylesheet" type="text/css">
-
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 </head>
 <body>
 
