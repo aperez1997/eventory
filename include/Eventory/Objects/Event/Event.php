@@ -95,7 +95,6 @@ class Event
 			return;
 		}
 
-		$this->updated = time();
 		$id = $performer->getId();
 		$this->performerIds[$id] = $performer->getName();
 		$performer->addEventId($this->id);
