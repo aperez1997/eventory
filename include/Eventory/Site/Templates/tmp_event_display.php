@@ -4,9 +4,10 @@ use Eventory\Objects\Event\Assets\EventAsset;
 use Eventory\Objects\Event\Event;
 
 /** @var $event Event */
+$eventId = $event->getId();
 $eventKey = $event->getKey();
 $description = $event->description;
-$f = 'm-d-Y ga';
+$f = $page->getTimeFormat();
 $created = date($f, $event->getCreated());
 $updated = date($f, $event->getUpdated());
 
@@ -34,8 +35,12 @@ foreach ($event->getPerformerIds() as $pId => $pName){
 	$href = $page->getLinkPerformerView($pId);
 	$performerContent .= "<li><a href='{$href}' target='_blank'>{$pName}</a></li>\n";
 }
+
+$hrefPerformerAdd = $page->getLinkEventPerformerAdd($eventId);
+$linkPerformerAdd = "<div class='performer-add'><a href='{$hrefPerformerAdd}'>Add</a></div>";
+
 if ($performerContent){
-	$performerContent = "<div>Performers:<ul>{$performerContent}</ul></div>\n";
+	$performerContent = "<div>Performers:<ul>{$performerContent}</ul>{$linkPerformerAdd}</div>\n";
 }
 
 $output = "

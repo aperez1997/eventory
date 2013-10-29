@@ -54,6 +54,14 @@ abstract class SitePageBase
 		return "?{$paramPage}={$pageViewPerf}&{$paramPerformer}={$performerId}";
 	}
 
+	public function getLinkEventPerformerAdd($eventId)
+	{
+		$paramPage = SitePageParams::PAGE;
+		$pageType = SitePageType::EVENT_PERFORMER_ADD;
+		$paramEvent = SitePageParams::EVENT_ID;
+		return "?{$paramPage}={$pageType}&{$paramEvent}={$eventId}";
+	}
+
 	protected function renderContent($templatePath, $vars)
 	{
 		$page = $this;
@@ -76,9 +84,25 @@ abstract class SitePageBase
 		return __DIR__ . '/Templates/';
 	}
 
+	protected function isAdminPage()
+	{
+		return false;
+	}
+
+	protected function authenticate()
+	{
+		// TODO: properly
+		return true;
+	}
+
 	/**
 	 * @param array $params
 	 * @return string HTML
 	 */
 	abstract public function render(array $params);
+
+	public function getTimeFormat()
+	{
+		return 'm-d-Y ga';
+	}
 }

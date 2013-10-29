@@ -7,7 +7,8 @@ namespace Eventory\Site\Constants;
 
 class SitePageParams
 {
-	const PAGE			= 'p';
+	const PAGE			= 'page';
+	const EVENT_ID		= 'event_id';
 	const PERFORMER_ID 	= 'performer_id';
-	const OFFSET		= 'o';
+	const OFFSET		= 'offset';
 }
