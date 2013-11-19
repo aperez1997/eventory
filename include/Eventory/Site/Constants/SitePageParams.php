@@ -11,4 +11,7 @@ class SitePageParams
 	const EVENT_ID		= 'event_id';
 	const PERFORMER_ID 	= 'performer_id';
 	const OFFSET		= 'offset';
+	const TYPE			= 'type';
+	const TEXT			= 'text';
+	const PICK			= 'pick';
 }

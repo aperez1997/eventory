@@ -38,6 +38,11 @@ class SitePageIndex extends SitePageBase
 				$pageObject = new SiteBrowseRecentEvents($this->store);
 				break;
 		}
+
+		if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+			$pageObject->post($_POST);
+		}
+
 		return $pageObject->render($params);
 	}
 }

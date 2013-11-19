@@ -39,3 +39,22 @@ strong {
     font-size: 1.5em;
     margin-bottom: 5px;
 }
+
+.resultBox
+{
+    margin: 10px;
+    padding: 10px;
+    font-size: 1.5em;
+    color: white;
+    border: 1px solid grey;
+}
+
+.resultBox.success
+{
+    background-color: green;
+}
+
+.resultBox.fail
+{
+    background-color: red;
+}

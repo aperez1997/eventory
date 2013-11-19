@@ -14,6 +14,8 @@ use Eventory\Storage\iStorageProvider;
 abstract class SitePageBase
 {
 	protected $store;
+	protected $postResult = null;
+	protected $postResultMsg;
 
 	public function __construct(iStorageProvider $store)
 	{
@@ -93,6 +95,45 @@ abstract class SitePageBase
 	{
 		// TODO: properly
 		return true;
+	}
+
+	public function isAdmin()
+	{
+		// TODO: properly
+		return true;
+	}
+
+	/**
+	 * @param array $params
+	 */
+	public function post(array $params){}
+
+	/**
+	 * @param $flag
+	 * @param $msg
+	 */
+	protected function setPostStatus($flag, $msg)
+	{
+		$this->postResult = $flag;
+		$this->postResultMsg = $msg;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hadPost()
+	{
+		return $this->postResult !== null;
+	}
+
+	public function wasPostSuccess()
+	{
+		return $this->postResult === true;
+	}
+
+	public function getPostResultMsg()
+	{
+		return $this->postResultMsg;
 	}
 
 	/**

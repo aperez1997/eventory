@@ -70,4 +70,9 @@ interface iStorageProvider
 	 * @return bool
 	 */
 	public function deletePerformer($id);
+
+	/**
+	 * @param array $performers		Array of Performer
+	 */
+	public function savePerformers(array $performers);
 }

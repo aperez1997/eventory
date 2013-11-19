@@ -36,8 +36,11 @@ foreach ($event->getPerformerIds() as $pId => $pName){
 	$performerContent .= "<li><a href='{$href}' target='_blank'>{$pName}</a></li>\n";
 }
 
-$hrefPerformerAdd = $page->getLinkEventPerformerAdd($eventId);
-$linkPerformerAdd = "<div class='performer-add'><a href='{$hrefPerformerAdd}'>Add</a></div>";
+$linkPerformerAdd = '';
+if ($page->isAdmin()){
+	$hrefPerformerAdd = $page->getLinkEventPerformerAdd($eventId);
+	$linkPerformerAdd = sprintf('<div class="performer-add"><a href="%s">Add Performer</a></div>', $hrefPerformerAdd);
+}
 
 if ($performerContent){
 	$performerContent = "<div>Performers:<ul>{$performerContent}</ul>{$linkPerformerAdd}</div>\n";
