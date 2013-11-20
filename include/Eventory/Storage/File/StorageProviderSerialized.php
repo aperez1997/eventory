@@ -298,7 +298,6 @@ class StorageProviderSerialized implements iStorageProvider
 
 	protected function saveDataToFile()
 	{
-		printf("writing to file [%s]\n", $this->fileName);
 		$data = array(
 			self::KEY_VERSION		=> self::CURRENT_VERSION,
 			self::KEY_EVENTS		=> $this->events,

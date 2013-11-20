@@ -14,6 +14,8 @@ use Eventory\Storage\iStorageProvider;
 abstract class SitePageBase
 {
 	protected $store;
+	protected $postResult = null;
+	protected $postResultMsg;
 
 	public function __construct(iStorageProvider $store)
 	{
@@ -54,6 +56,14 @@ abstract class SitePageBase
 		return "?{$paramPage}={$pageViewPerf}&{$paramPerformer}={$performerId}";
 	}
 
+	public function getLinkEventPerformerAdd($eventId)
+	{
+		$paramPage = SitePageParams::PAGE;
+		$pageType = SitePageType::EVENT_PERFORMER_ADD;
+		$paramEvent = SitePageParams::EVENT_ID;
+		return "?{$paramPage}={$pageType}&{$paramEvent}={$eventId}";
+	}
+
 	protected function renderContent($templatePath, $vars)
 	{
 		$page = $this;
@@ -76,9 +86,64 @@ abstract class SitePageBase
 		return __DIR__ . '/Templates/';
 	}
 
+	protected function isAdminPage()
+	{
+		return false;
+	}
+
+	protected function authenticate()
+	{
+		// TODO: properly
+		return true;
+	}
+
+	public function isAdmin()
+	{
+		// TODO: properly
+		return true;
+	}
+
+	/**
+	 * @param array $params
+	 */
+	public function post(array $params){}
+
+	/**
+	 * @param $flag
+	 * @param $msg
+	 */
+	protected function setPostStatus($flag, $msg)
+	{
+		$this->postResult = $flag;
+		$this->postResultMsg = $msg;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hadPost()
+	{
+		return $this->postResult !== null;
+	}
+
+	public function wasPostSuccess()
+	{
+		return $this->postResult === true;
+	}
+
+	public function getPostResultMsg()
+	{
+		return $this->postResultMsg;
+	}
+
 	/**
 	 * @param array $params
 	 * @return string HTML
 	 */
 	abstract public function render(array $params);
+
+	public function getTimeFormat()
+	{
+		return 'm-d-Y ga';
+	}
 }

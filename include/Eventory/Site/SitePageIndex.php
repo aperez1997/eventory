@@ -5,6 +5,7 @@
 
 namespace Eventory\Site;
 
+use Eventory\Site\Admin\SiteAdminEventPerformerAdd;
 use Eventory\Site\Browse\SiteBrowsePerformers;
 use Eventory\Site\Browse\SiteBrowseRecentEvents;
 use Eventory\Site\Constants\SitePageParams;
@@ -29,11 +30,19 @@ class SitePageIndex extends SitePageBase
 			case SitePageType::BROWSE_PERFORMERS:
 				$pageObject = new SiteBrowsePerformers($this->store);
 				break;
+			case SitePageType::EVENT_PERFORMER_ADD:
+				$pageObject = new SiteAdminEventPerformerAdd($this->store);
+				break;
 			case SitePageType::RECENT:
 			default:
 				$pageObject = new SiteBrowseRecentEvents($this->store);
 				break;
 		}
+
+		if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+			$pageObject->post($_POST);
+		}
+
 		return $pageObject->render($params);
 	}
 }

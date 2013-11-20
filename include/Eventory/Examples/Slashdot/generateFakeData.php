@@ -8,6 +8,7 @@ $store = getStoreProvider();
 
 $performer1 = $store->createPerformer('Galileo Arduino');
 $performer2 = $store->createPerformer('Highlight halo');
+$performer3 = $store->createPerformer('Third Person');
 $performer2->setHighlight(true);
 
 
@@ -26,4 +27,4 @@ $asset1->key = 'icon';
 $event1->addAssets(array($asset1));
 
 $store->saveEvents(array($event1));
-$store->savePerformers(array($performer1, $performer2));
+$store->savePerformers(array($performer1, $performer2, $performer3));
