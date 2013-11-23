@@ -84,6 +84,7 @@ abstract class EventListSiteScraperV1
 			$href = $this->getEventHrefFromNode($htmlNode);
 			$id = $this->getEventIdFromNode($htmlNode);
 			$scrapeItem = $this->createEventScrapeItem($href, $id);
+			$scrapeItem->eventThumb = $this->getEventThumbFromNode($htmlNode);
 			$scrapeItems[$href] = $scrapeItem;
 		}
 		return $scrapeItems;
@@ -99,6 +100,11 @@ abstract class EventListSiteScraperV1
 	}
 
 	abstract protected function getEventIdFromNode(\simple_html_dom_node $htmlNode);
+
+	protected function getEventThumbFromNode(\simple_html_dom_node $htmlNode)
+	{
+		return null;
+	}
 
 	protected function createEventScrapeItem($url, $id)
 	{

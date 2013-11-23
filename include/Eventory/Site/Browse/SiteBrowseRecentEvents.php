@@ -13,7 +13,7 @@ class SiteBrowseRecentEvents extends SitePageBase
 {
 	public function render(array $params)
 	{
-		$maxPerPage = 100;
+		$maxPerPage = 50;
 		$offset = 0;
 
 		$paramOffset = SitePageParams::OFFSET;

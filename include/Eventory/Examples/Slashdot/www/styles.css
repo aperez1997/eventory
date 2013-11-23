@@ -1,5 +1,17 @@
+h2 {
+    margin-bottom: 10px;
+}
+
+p, ul {
+    margin: 0.5em 0;
+}
+
 table.events {
     border: 1px solid black;
+}
+
+table.events td {
+    padding-bottom: 5px;
 }
 
 .date-row {

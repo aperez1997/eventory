@@ -44,10 +44,12 @@ if ($page->isAdmin()){
 
 if ($performerContent){
 	$performerContent = "<div>Performers:<ul>{$performerContent}</ul>{$linkPerformerAdd}</div>\n";
+} else {
+	$performerContent = $linkPerformerAdd;
 }
 
 $output = "
-<h1>{$eventKey}</h1>
+<h2>{$eventKey}</h2>
 <div>[#{$event->getId()}] Created: {$created}, Updated: {$updated}</div>
 <p>{$description}</p>
 {$assetContent}
