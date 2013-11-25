@@ -100,7 +100,7 @@ class Performer
 	public function getSortKey()
 	{
 		$bit = $this->highlight ? '1' : '0';
-		return intval($bit . $this->updated);
+		return intval($bit . $this->updated . $this->id);
 	}
 
 	public function isDeleted()
