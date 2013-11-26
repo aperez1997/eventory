@@ -6,7 +6,6 @@
 
 namespace Eventory\Gather\Scrapers;
 
-
 use Eventory\Objects\EventScrapeItem;
 
 abstract class EventListSiteScraperV1
@@ -85,6 +84,7 @@ abstract class EventListSiteScraperV1
 			$id = $this->getEventIdFromNode($htmlNode);
 			$scrapeItem = $this->createEventScrapeItem($href, $id);
 			$scrapeItem->eventThumb = $this->getEventThumbFromNode($htmlNode);
+			$this->addExtraToScrapeItem($htmlNode, $scrapeItem);
 			$scrapeItems[$href] = $scrapeItem;
 		}
 		return $scrapeItems;
@@ -112,5 +112,10 @@ abstract class EventListSiteScraperV1
 		$scrapeItem->eventUrl = $url;
 		$scrapeItem->eventKey = $id;
 		return $scrapeItem;
+	}
+
+	protected function addExtraToScrapeItem(\simple_html_dom_node $htmlNode, EventScrapeItem $scrapeItem)
+	{
+		// do nothing
 	}
 }

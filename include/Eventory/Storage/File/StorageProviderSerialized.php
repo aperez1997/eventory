@@ -1,8 +1,4 @@
 <?php
-/**
- * @author Tony Perez <aperez1997@yahoo.com>
-
- */
 
 namespace Eventory\Storage\File;
 
@@ -209,7 +205,8 @@ class StorageProviderSerialized implements iStorageProvider
 	public function loadActivePerformerNames()
 	{
 		$performers = $this->loadAllPerformers();
-		$performers = array_filter($performers, array($this, 'notDeleted'));
+		$fn = function(Performer $p){ return !$p->isDeleted(); };
+		$performers = array_filter($performers, $fn);
 		return array_map(function(Performer $p){ return $p->getName(); }, $performers);
 	}
 

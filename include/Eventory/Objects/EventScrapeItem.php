@@ -12,4 +12,5 @@ class EventScrapeItem
 	public $eventKey;
 	public $eventUrl;
 	public $eventThumb;
+	public $eventDesc;
 }
