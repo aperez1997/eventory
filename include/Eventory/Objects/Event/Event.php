@@ -60,6 +60,11 @@ class Event
 		$this->eventUrl = $url;
 	}
 
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
 	public function addAssets($assets)
 	{
 		$this->updated = time();

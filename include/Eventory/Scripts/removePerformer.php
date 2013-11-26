@@ -18,5 +18,3 @@ if ($rv){
 } else {
 	echo "failed\n";
 }
-
-

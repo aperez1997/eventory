@@ -6,6 +6,7 @@
 
 namespace Eventory\Gather\Scrapers;
 
+use Eventory\Model\EventModel;
 use Eventory\Objects\Event\Event;
 use Eventory\Objects\EventScrapeItem;
 use Eventory\Storage\iStorageProvider;
@@ -24,12 +25,16 @@ abstract class EventSiteScraperV1
 	/** @var iStorageProvider */
 	protected $store;
 
+	/** @var EventModel */
+	protected $eventModel;
+
 	protected $maxToScrape = null;
 	protected $ratePerSecond = 10;
 
 	public function __construct(iStorageProvider $store)
 	{
-		$this->store = $store;
+		$this->store		= $store;
+		$this->eventModel	= new EventModel($store);
 	}
 
 	/**
@@ -72,6 +77,8 @@ abstract class EventSiteScraperV1
 		$this->event->addSubUrls(array($this->eventScrapeItem->eventUrl));
 		$this->event->addAssets($this->parseGetAssets());
 
+		$this->findPerformersForEvent();
+
 		usleep(1000000 / $this->ratePerSecond);
 
 		return;
@@ -104,4 +111,9 @@ abstract class EventSiteScraperV1
 	 * @return array [EventAsset]
 	 */
 	abstract protected function parseGetAssets();
+
+	protected function findPerformersForEvent()
+	{
+		$this->eventModel->findPerformersForEvent($this->event);
+	}
 }

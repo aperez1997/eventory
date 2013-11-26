@@ -66,6 +66,11 @@ interface iStorageProvider
 	public function loadAllPerformers();
 
 	/**
+	 * @return array of strings
+	 */
+	public function loadActivePerformerNames();
+
+	/**
 	 * @param $id
 	 * @return bool
 	 */

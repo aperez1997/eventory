@@ -10,6 +10,7 @@ use Eventory\Objects\Event\Assets\EventAsset;
 use Eventory\Objects\Event\Event;
 use Eventory\Objects\Performers\Performer;
 use Eventory\Storage\iStorageProvider;
+use Eventory\Utils\ArrayUtils;
 
 class StorageProviderSerialized implements iStorageProvider
 {
@@ -61,6 +62,8 @@ class StorageProviderSerialized implements iStorageProvider
 	 */
 	public function saveEvents(array $events)
 	{
+		// reload data again in case of change during runtime
+		$this->loadDataFromFile();
 		$this->getEvents();
 		foreach ($events as $event){
 			/** @var Event $event */
@@ -153,6 +156,8 @@ class StorageProviderSerialized implements iStorageProvider
 
 	public function savePerformers(array $performers)
 	{
+		// reload data again in case of change during runtime
+		$this->loadDataFromFile();
 		$this->getPerformers();
 		foreach ($performers as $performer){
 			/** @var Performer $performer */
@@ -196,6 +201,16 @@ class StorageProviderSerialized implements iStorageProvider
 	public function loadAllPerformers()
 	{
 		return $this->getPerformers();
+	}
+
+	/**
+	 * @return array of strings
+	 */
+	public function loadActivePerformerNames()
+	{
+		$performers = $this->loadAllPerformers();
+		$performers = array_filter($performers, array($this, 'notDeleted'));
+		return array_map(function(Performer $p){ return $p->getName(); }, $performers);
 	}
 
 	/**

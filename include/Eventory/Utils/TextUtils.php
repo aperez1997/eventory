@@ -38,7 +38,7 @@ class TextUtils
 		'the', 'this', 'then', 'these',
 		'stay', 'well', 'with',
 		'who', 'what', 'where', 'when', 'why',
-		'once', 'initially', 'eventually', 'soon', 'until', 'before', 'wenever',
+		'once', 'initially', 'eventually', 'soon', 'until', 'before', 'whenever',
 		'at', 'as', 'ask', 'after', 'by', 'to', 'my',
 		'giving', 'luckily',
 		'his', 'her', 'you', 'me', 'i', 'their', 'we', 
