@@ -58,8 +58,6 @@ class StorageProviderSerialized implements iStorageProvider
 	 */
 	public function saveEvents(array $events)
 	{
-		// reload data again in case of change during runtime
-		$this->loadDataFromFile();
 		$this->getEvents();
 		foreach ($events as $event){
 			/** @var Event $event */
@@ -152,8 +150,6 @@ class StorageProviderSerialized implements iStorageProvider
 
 	public function savePerformers(array $performers)
 	{
-		// reload data again in case of change during runtime
-		$this->loadDataFromFile();
 		$this->getPerformers();
 		foreach ($performers as $performer){
 			/** @var Performer $performer */
