@@ -79,6 +79,9 @@ abstract class EventSiteScraperV1
 
 		$this->findPerformersForEvent();
 
+		// Any extra data will be handled here
+		$this->findExtraData();
+
 		usleep(1000000 / $this->ratePerSecond);
 
 		return;
@@ -115,5 +118,10 @@ abstract class EventSiteScraperV1
 	protected function findPerformersForEvent()
 	{
 		$this->eventModel->findPerformersForEvent($this->event);
+	}
+
+	protected function findExtraData()
+	{
+		return null;
 	}
 }
