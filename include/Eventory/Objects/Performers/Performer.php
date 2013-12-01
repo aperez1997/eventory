@@ -6,6 +6,8 @@
 
 namespace Eventory\Objects\Performers;
 
+use Eventory\Objects\Event\Event;
+
 class Performer
 {
 	public static function CreateNew($name)
@@ -91,6 +93,12 @@ class Performer
 			$this->addEventId($eventId);
 		}
 	}
+
+        public function removeEvent(Event $event)
+        {
+                $id = $event->getId();
+                unset($this->eventIds[$id]);
+        }
 
 	public function getUpdated()
 	{

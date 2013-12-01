@@ -38,6 +38,29 @@ class EventModel
 		// no save here
 	}
 
+
+	public function removePerformerIdFromEventId($performerId, $eventId)
+	{
+		$performer	= $this->store->loadPerformerById($performerId);
+		$event		= $this->store->loadEventById($eventId);
+		if (!$performer instanceof Performer){
+                        throw new \Exception(sprintf('Invalid performer id [%s]', $performerId));
+                }
+		if (!$event instanceof Event){
+			 throw new \Exception(sprintf('Invalid event id [%s]', $eventId));
+		}
+		$this->removePerformerFromEvent($performer, $event);
+	}
+
+	public function removePerformerFromEvent(Performer $performer, Event $event)
+	{
+		$event->removePerformer($performer);
+		$performer->removeEvent($event);
+
+                $this->store->saveEvents(array($event));
+                $this->store->savePerformers(array($performer));		
+	}
+
 	/**
 	 * @param $dupePerformerId
 	 * @param $realPerformerId
@@ -69,6 +92,7 @@ class EventModel
 		foreach ($events as $event){
 			/** @var Event $event */
 			$event->addPerformer($realPerformer);
+			$event->removePerformer($dupePerformer);
 		}
 		$this->store->deletePerformer($dupePerformer->getId());
 

@@ -85,6 +85,16 @@ class StorageProviderSerialized implements iStorageProvider
 	}
 
 	/**
+	 * @param int $eventId
+	 * @return Event
+	 */
+	public function loadEventById($eventId)
+	{
+		$events = $this->loadEventsById(array($eventId));
+		return reset($events);
+	}
+
+	/**
 	 * @param string $key
 	 * @return Event
 	 */

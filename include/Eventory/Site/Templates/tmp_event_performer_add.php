@@ -14,6 +14,12 @@ if (!$event instanceof Event){
 	return;
 }
 
+$performerContent = '';
+foreach ($event->getPerformerIds() as $pId => $pName){
+        $href = $page->getLinkPerformerView($pId);
+        $performerContent .= "<li><a href='{$href}' target='_blank'>{$pName}</a></li>\n";
+}
+
 $existingIds = array_keys($event->getPerformerIds());
 
 $performers = $page->getStorageProvider()->loadAllPerformers();

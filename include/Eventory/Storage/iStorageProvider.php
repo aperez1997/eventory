@@ -29,6 +29,13 @@ interface iStorageProvider
 	 */
 	public function loadEventsById(array $ids);
 
+
+        /**
+         * @param int $eventId
+         * @return Event
+         */
+	public function loadEventById($eventId);
+
 	/**
 	 * @param string $key
 	 * @return Event
