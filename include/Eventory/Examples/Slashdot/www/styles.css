@@ -39,6 +39,12 @@ li.thumb {
     display: inline-block;
 }
 
+li.thumb.small {
+    width: 14%;
+    min-width: 50px;
+    display: inline-block;
+}
+
 li.thumb img {
     width: 99%;
 }

@@ -13,7 +13,8 @@ class TextUtils
 		$words = explode(' ', $text);
 		$hash = array_combine($toRemove, $toRemove);
 		foreach ($words as $k => $word){
-			if (isset($hash[strtolower($word)])){
+			$word = strtolower(trim($word));
+			if (isset($hash[$word])){
 				unset ($words[$k]);
 			}
 		}
@@ -36,11 +37,11 @@ class TextUtils
 	protected static $INVALID_FIRST_NAMES = array(
 		'but', 'however', 'if',
 		'the', 'this', 'then', 'these',
-		'stay', 'well', 'with',
+		'stay', 'well', 'with', 'while',
 		'who', 'what', 'where', 'when', 'why',
 		'once', 'initially', 'eventually', 'soon', 'until', 'before', 'whenever',
 		'at', 'as', 'ask', 'after', 'by', 'to', 'my',
-		'giving', 'luckily',
-		'his', 'her', 'you', 'me', 'i', 'their', 'we', 
+		'giving', 'luckily', 'back',
+		'his', 'her', 'you', 'me', 'my', 'i', 'their', 'we', 
 	);
 }

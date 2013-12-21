@@ -12,11 +12,15 @@ $created = date($f, $event->getCreated());
 $updated = date($f, $event->getUpdated());
 
 $assetContent = '';
+$assetClass = 'thumb';
+if (count($event->getAssets()) > 10){
+	$assetClass = 'thumb small';
+}
 foreach ($event->getAssets() as $asset){
 	/** @var EventAsset $asset */
 	$href = $asset->linkUrl;
 	$src = $asset->imageUrl;
-	$assetContent .= "<li class='thumb'><a href='{$href}' target='_blank'><img src='{$src}'></a></li>";
+	$assetContent .= "<li class='{$assetClass}'><a href='{$href}' target='_blank'><img src='{$src}'></a></li>";
 }
 if ($assetContent){
 	$assetContent = "<div><ul>{$assetContent}</ul></div>";
