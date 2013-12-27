@@ -23,7 +23,7 @@ foreach ($event->getAssets() as $asset){
 	$assetContent .= "<li class='{$assetClass}'><a href='{$href}' target='_blank'><img src='{$src}'></a></li>";
 }
 if ($assetContent){
-	$assetContent = "<div><ul>{$assetContent}</ul></div>";
+	$assetContent = "<div class='assets'><ul>{$assetContent}</ul></div>";
 }
 
 $urlContent = '';
@@ -31,7 +31,7 @@ foreach ($event->getSubUrls() as $url){
 	$urlContent .= "<li><a href='{$url}' target='_blank'>{$url}</a></li>\n";
 }
 if ($urlContent){
-	$urlContent = "<div>Links:<ul>{$urlContent}</ul></div>\n";
+	$urlContent = "<div class='links'>Links:<ul>{$urlContent}</ul></div>\n";
 }
 
 $performerContent = '';
@@ -47,17 +47,24 @@ if ($page->isAdmin()){
 }
 
 if ($performerContent){
-	$performerContent = "<div>Performers: {$linkPerformerAdd}<ul>{$performerContent}</ul></div>\n";
+	$performerContent = "<div class='performers'>Performers: {$linkPerformerAdd}<ul>{$performerContent}</ul></div>\n";
 } else {
 	$performerContent = $linkPerformerAdd;
 }
 
+$outerClass = '';
+if (count($event->getAssets()) == 1){
+	$outerClass = 'mono';
+}
+
 $output = "
-<h2>{$eventKey}</h2>
-<div>[#{$event->getId()}] Created: {$created}, Updated: {$updated}</div>
-<p>{$description}</p>
+<div class='{$outerClass}'>
+<h2 class='key'>{$eventKey}</h2>
+<div class='info'>[#{$event->getId()}] Created: {$created}, Updated: {$updated}</div>
+<div class='description'><p>{$description}</p></div>
 {$assetContent}
 {$urlContent}
 {$performerContent}
+</div>
 \n";
 echo $output;

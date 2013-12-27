@@ -49,6 +49,27 @@ li.thumb img {
     width: 99%;
 }
 
+.events .mono {
+    position: relative;
+}
+
+.events .mono .key,
+.events .mono .info,
+.events .mono .description,
+.events .links,
+.events .performers {
+    width: 50%;
+}
+.events .mono .assets {
+    position: absolute;
+    width: 50%;
+    top: 0;
+    right: 0;
+}
+.events .mono li.thumb {
+    width: auto;
+}
+
 .stripe {
     background-color: #EEEEEE;
 }
