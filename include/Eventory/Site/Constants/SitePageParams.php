@@ -10,6 +10,7 @@ class SitePageParams
 	const PAGE			= 'page';
 	const EVENT_ID		= 'event_id';
 	const PERFORMER_ID 	= 'performer_id';
+	const SORT			= 'sort';
 	const OFFSET		= 'offset';
 	const TYPE			= 'type';
 	const TEXT			= 'text';

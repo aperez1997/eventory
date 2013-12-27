@@ -41,11 +41,13 @@ abstract class SitePageBase
 		return $url;
 	}
 
-	public function getLinkBrowsePerformers()
+	public function getLinkBrowsePerformers($sort = null)
 	{
 		$paramPage = SitePageParams::PAGE;
 		$pageBrowsePerformers = SitePageType::BROWSE_PERFORMERS;
-		return "?{$paramPage}={$pageBrowsePerformers}";
+		$sortParam = SitePageParams::SORT;
+		$link = "?{$paramPage}={$pageBrowsePerformers}&{$sortParam}={$sort}";
+		return $link;
 	}
 
 	public function getLinkPerformerView($performerId)

@@ -68,6 +68,11 @@ class Performer
 		return $this->eventIds ? $this->eventIds : array();
 	}
 
+	public function getEventCount()
+	{
+		return count($this->eventIds);
+	}
+
 	public function addSiteUrl($url)
 	{
 		$this->siteUrls[$url] = $url;
@@ -94,11 +99,11 @@ class Performer
 		}
 	}
 
-        public function removeEvent(Event $event)
-        {
-                $id = $event->getId();
-                unset($this->eventIds[$id]);
-        }
+	public function removeEvent(Event $event)
+	{
+		$id = $event->getId();
+		unset($this->eventIds[$id]);
+	}
 
 	public function getUpdated()
 	{
@@ -108,7 +113,7 @@ class Performer
 	public function getSortKey()
 	{
 		$bit = $this->highlight ? '1' : '0';
-		return intval($bit . $this->updated . $this->id);
+		return strval($bit . $this->updated . $this->id);
 	}
 
 	public function isDeleted()

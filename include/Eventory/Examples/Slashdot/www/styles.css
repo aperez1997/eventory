@@ -21,7 +21,7 @@ table.events td {
 
 .nav li {
     display: inline-block;
-    width: 20%;
+    padding: 5px;
 }
 
 li.highlight {

@@ -2,7 +2,7 @@
 
 /** @var $vars array */
 
-if ($vars['p']){
+if (isset($vars['p'])){
 	echo "<a href='{$vars['p']}'><strong>&laquo;PREV</strong></a> &nbsp; ";
 }
 

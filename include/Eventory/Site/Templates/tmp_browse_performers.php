@@ -1,14 +1,28 @@
-<ul>
 <?php
 
 use Eventory\Objects\Performers\Performer;
 
-foreach ($vars as $performer){
+/** @var array $vars */
+
+$performers = $vars[0];
+$links = $vars[1];
+
+echo '<ul class="nav"><li>Sort By:</li>';
+foreach ($links as $linkArr){
+	list($text, $url) = $linkArr;
+	if ($url){
+		$text = "<a href=\"{$url}\">{$text}</a>";
+	}
+	echo "<li>{$text}</li>\n";
+}
+echo "</ul><ul>";
+
+foreach ($performers as $performer){
 	/** @var Performer $performer */
 
 	$name = $performer->getName();
 	$href = $page->getLinkPerformerView($performer->getId());
-	$count = count($performer->getEventIds());
+	$count = $performer->getEventCount();
 	$time = date('m-d-Y h:i:sA', $performer->getUpdated());
 
 	$high = '';
@@ -22,5 +36,4 @@ foreach ($vars as $performer){
 </li>\n";
 }
 
-?>
-</ul>
+echo "</ul>";
