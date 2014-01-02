@@ -9,9 +9,9 @@ use Eventory\Utils\ArrayUtils;
 
 class SiteBrowsePerformers extends SitePageBase
 {
-	const SORT_DEFAULT		= 'Default';
-	const SORT_ALPHA 		= 'Alpha';
-	const SORT_EVENTS		= 'Event Count';
+	const SORT_DEFAULT		= Performer::SORT_DEFAULT;
+	const SORT_ALPHA 		= Performer::SORT_ALPHA;
+	const SORT_EVENTS		= Performer::SORT_EVENTS;
 
 	public function render(array $params)
 	{
@@ -39,25 +39,11 @@ class SiteBrowsePerformers extends SitePageBase
 		return $this->renderMain($content);
 	}
 
-	protected function handleSort($performers, $sort)
+	protected function handleSort($performers, $sortType)
 	{
-		switch ($sort){
-			case self::SORT_ALPHA:
-				$performers = ArrayUtils::ReindexByMethod($performers, 'getName');
-				ksort($performers);
-				break;
-			case self::SORT_EVENTS:
-				$performers = ArrayUtils::ReindexByMethod($performers, 'getEventCount');
-				ksort($performers);
-				$performers = array_reverse($performers);
-				break;
-			case self::SORT_DEFAULT:
-			default:
-				$performers = ArrayUtils::ReindexByMethod($performers, 'getSortKey');
-				ksort($performers);
-				$performers = array_reverse($performers);
-				break;
-		}
+		$fn = function (Performer $p) use ($sortType) { return $p->getSortKey($sortType); };
+		$performers = ArrayUtils::ReindexByFunction($performers, $fn);
+		ksort($performers);
 		return $performers;
 	}
 

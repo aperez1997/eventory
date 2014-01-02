@@ -10,6 +10,10 @@ use Eventory\Objects\Event\Event;
 
 class Performer
 {
+	const SORT_DEFAULT		= 'Default';
+	const SORT_ALPHA 		= 'Alpha';
+	const SORT_EVENTS		= 'EventCount';
+
 	public static function CreateNew($name)
 	{
 		$perf = new Performer();
@@ -110,10 +114,23 @@ class Performer
 		return $this->updated;
 	}
 
-	public function getSortKey()
+	public function getSortKey($sortType = null)
 	{
-		$bit = $this->highlight ? '1' : '0';
-		return strval($bit . $this->updated . $this->id);
+		switch ($sortType){
+			case self::SORT_ALPHA:
+				$sortKey = strval($this->getName() . $this->getId());
+				break;
+			case self::SORT_EVENTS:
+				$sortKey = intval((1000000 - $this->getEventCount()) . $this->getId());
+				break;
+			case self::SORT_DEFAULT:
+			default:
+				$bit = $this->highlight ? '1' : '2';
+				$sortKey = intval('-' . $bit . $this->getUpdated() . $this->getId());
+				break;
+		}
+
+		return $sortKey;
 	}
 
 	public function isDeleted()

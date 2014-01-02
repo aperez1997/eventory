@@ -7,6 +7,7 @@
 namespace Eventory\Site;
 
 
+use Eventory\Site\Browse\SiteBrowsePerformers;
 use Eventory\Site\Constants\SitePageParams;
 use Eventory\Site\Constants\SitePageType;
 use Eventory\Storage\iStorageProvider;
@@ -46,6 +47,9 @@ abstract class SitePageBase
 		$paramPage = SitePageParams::PAGE;
 		$pageBrowsePerformers = SitePageType::BROWSE_PERFORMERS;
 		$sortParam = SitePageParams::SORT;
+		if (empty($sort)){
+			$sort = SiteBrowsePerformers::SORT_DEFAULT;
+		}
 		$link = "?{$paramPage}={$pageBrowsePerformers}&{$sortParam}={$sort}";
 		return $link;
 	}
