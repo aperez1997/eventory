@@ -83,8 +83,24 @@ abstract class SitePageBase
 	{
 		$page = $this;
 		ob_start();
+		$navItems = $this->getNavItems();
 		require __DIR__ .'/Templates/tmp_main.php';
 		return ob_get_clean();
+	}
+
+	protected function getNavItems()
+	{
+		$navItems = array(
+			array($this->getLinkRecentEvents(), 'Recent Events'),
+			array($this->getLinkBrowsePerformers(), 'Performers', true),
+		);
+		return array_merge($this->navItems, $navItems);
+	}
+
+	protected $navItems = array();
+	public function prependNavItems($items)
+	{
+		$this->navItems = $items;
 	}
 
 	protected function getTemplatesPath()

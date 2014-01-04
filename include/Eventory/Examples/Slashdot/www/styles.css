@@ -19,9 +19,24 @@ table.events td {
     height: 50px;
 }
 
+.nav {
+position: fixed;
+top: 0;
+background-color: white;
+width: 100%;
+margin: 0 0 0 -8px;
+padding: 0px;
+z-index: 100;
+border: 1px solid grey;
+}
+
 .nav li {
     display: inline-block;
     padding: 5px;
+}
+
+.content {
+    margin-top: 50px;
 }
 
 li.highlight {
@@ -49,8 +64,13 @@ li.thumb img {
     width: 99%;
 }
 
-.events .mono {
+.events .mono,
+.events .regular {
     position: relative;
+}
+
+.events .regular .info {
+    position: absolute; right: 0; top: 0;
 }
 
 .events .mono .key,

@@ -52,7 +52,7 @@ if ($performerContent){
 	$performerContent = $linkPerformerAdd;
 }
 
-$outerClass = '';
+$outerClass = 'regular';
 if (count($event->getAssets()) == 1){
 	$outerClass = 'mono';
 }

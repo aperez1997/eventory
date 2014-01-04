@@ -43,6 +43,8 @@ class SitePageIndex extends SitePageBase
 			$pageObject->post($_POST);
 		}
 
+		$pageObject->prependNavItems($this->navItems);
+
 		return $pageObject->render($params);
 	}
 }
