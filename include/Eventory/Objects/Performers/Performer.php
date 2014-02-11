@@ -121,12 +121,12 @@ class Performer
 				$sortKey = strval($this->getName() . $this->getId());
 				break;
 			case self::SORT_EVENTS:
-				$sortKey = intval((1000000 - $this->getEventCount()) . $this->getId());
+				$sortKey = (100000 - $this->getEventCount()) * 10000 + $this->getId();
 				break;
 			case self::SORT_DEFAULT:
 			default:
-				$bit = $this->highlight ? '1' : '2';
-				$sortKey = intval('-' . $bit . $this->getUpdated() . $this->getId());
+				$bit = $this->highlight ? 'A' : 'Z';
+				$sortKey = strval($bit . (2000000000 - $this->getUpdated()) . $this->getId());
 				break;
 		}
 
