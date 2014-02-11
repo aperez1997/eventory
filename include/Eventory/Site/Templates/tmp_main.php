@@ -1,6 +1,6 @@
 <html>
 <head>
-
+<title><?php echo $title;?></title>
 	<LINK href="styles.css" rel="stylesheet" type="text/css">
 <script src="jquery.min.js"></script>
 </head>

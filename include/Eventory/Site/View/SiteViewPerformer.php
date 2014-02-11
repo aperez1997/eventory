@@ -21,6 +21,6 @@ class SiteViewPerformer extends SitePageBase
 		$performer = $this->store->loadPerformerById($pId);
 
 		$content = $this->renderContent($this->getTemplatesPath() . 'tmp_view_performer.php', $performer);
-		return $this->renderMain($content);
+		return $this->renderMain($content, 'E: '.$performer->getName());
 	}
 }

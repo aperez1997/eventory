@@ -79,7 +79,7 @@ abstract class SitePageBase
 		return $content;
 	}
 
-	protected function renderMain($mainContent)
+	protected function renderMain($mainContent, $title)
 	{
 		$page = $this;
 		ob_start();
@@ -94,11 +94,11 @@ abstract class SitePageBase
 			array($this->getLinkRecentEvents(), 'Recent Events'),
 			array($this->getLinkBrowsePerformers(), 'Performers', true),
 		);
-		return array_merge($this->navItems, $navItems);
+		return array_merge($navItems, $this->navItems);
 	}
 
 	protected $navItems = array();
-	public function prependNavItems($items)
+	public function appendNavItems($items)
 	{
 		$this->navItems = $items;
 	}

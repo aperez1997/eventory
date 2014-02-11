@@ -36,6 +36,6 @@ class SiteBrowseRecentEvents extends SitePageBase
 
 		$content = $this->renderContent($this->getTemplatesPath() . 'tmp_browse_recent_events.php', $vars);
 
-		return $this->renderMain($content);
+		return $this->renderMain($content, 'E: Recent Events');
 	}
 }

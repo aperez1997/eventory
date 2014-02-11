@@ -36,7 +36,7 @@ class SiteBrowsePerformers extends SitePageBase
 
 		$content = $this->renderContent($this->getTemplatesPath() . 'tmp_browse_performers.php', array($performers, $links));
 
-		return $this->renderMain($content);
+		return $this->renderMain($content, 'E: Performers');
 	}
 
 	protected function handleSort($performers, $sortType)
