@@ -56,6 +56,12 @@ interface iStorageProvider
 	public function createPerformer($name);
 
 	/**
+	 * @param array $ids
+	 * @return array Performer
+	 */
+	public function loadPerformersByIds(array $ids);
+
+	/**
 	 * @param string $performerId
 	 * @return Performer
 	 */

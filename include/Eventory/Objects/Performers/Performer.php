@@ -7,8 +7,9 @@
 namespace Eventory\Objects\Performers;
 
 use Eventory\Objects\Event\Event;
+use Eventory\Objects\ObjectAbstract;
 
-class Performer
+class Performer extends ObjectAbstract
 {
 	const SORT_DEFAULT		= 'Default';
 	const SORT_ALPHA 		= 'Alpha';
@@ -19,6 +20,19 @@ class Performer
 		$perf = new Performer();
 		$perf->name = $name;
 		return $perf;
+	}
+
+	public static function CreateFromData($data)
+	{
+		$performer = new Performer();
+		foreach ($performer as $k => $v){
+			if (isset($data[$k])){
+				$performer->$k = $data->$k;
+			}
+		}
+		$performer->convertTinyIntToBool('deleted');
+		$performer->convertTinyIntToBool('highlight');
+		return $performer;
 	}
 
 	public $id;

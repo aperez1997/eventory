@@ -19,6 +19,17 @@ class Event
 		return $event;
 	}
 
+	public static function CreateFromData($data)
+	{
+		$event = new Event();
+		foreach ($event as $k => $v){
+			if (isset($data[$k])){
+				$event->$k = $data->$k;
+			}
+		}
+		return $event;
+	}
+
 	public $id;
 	public $eventKey;
 	public $eventUrl;

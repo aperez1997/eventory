@@ -2,13 +2,12 @@
 
 namespace Eventory\Storage\File;
 
-use Eventory\Objects\Event\Assets\EventAsset;
 use Eventory\Objects\Event\Event;
 use Eventory\Objects\Performers\Performer;
 use Eventory\Storage\iStorageProvider;
-use Eventory\Utils\ArrayUtils;
+use Eventory\Storage\StorageProviderAbstract;
 
-class StorageProviderSerialized implements iStorageProvider
+class StorageProviderSerialized extends StorageProviderAbstract implements iStorageProvider
 {
 	const CURRENT_VERSION = 1;
 
@@ -82,16 +81,6 @@ class StorageProviderSerialized implements iStorageProvider
 			}
 		}
 		return $events;
-	}
-
-	/**
-	 * @param int $eventId
-	 * @return Event
-	 */
-	public function loadEventById($eventId)
-	{
-		$events = $this->loadEventsById(array($eventId));
-		return reset($events);
 	}
 
 	/**
@@ -170,16 +159,13 @@ class StorageProviderSerialized implements iStorageProvider
 	}
 
 	/**
-	 * @param $performerId
-	 * @return Performer
+	 * @param array $ids
+	 * @return array Performer
 	 */
-	public function loadPerformerById($performerId)
+	public function loadPerformersByIds(array $ids)
 	{
 		$performers = $this->getPerformers();
-		if (isset($performers[$performerId])){
-			return $performers[$performerId];
-		}
-		return null;
+		return array_intersect_key($performers, array_flip(array_values($ids)));
 	}
 
 	/**
@@ -203,17 +189,6 @@ class StorageProviderSerialized implements iStorageProvider
 	public function loadAllPerformers()
 	{
 		return $this->getPerformers();
-	}
-
-	/**
-	 * @return array of strings
-	 */
-	public function loadActivePerformerNames()
-	{
-		$performers = $this->loadAllPerformers();
-		$fn = function(Performer $p){ return !$p->isDeleted(); };
-		$performers = array_filter($performers, $fn);
-		return array_map(function(Performer $p){ return $p->getName(); }, $performers);
 	}
 
 	/**
