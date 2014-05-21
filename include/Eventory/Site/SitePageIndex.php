@@ -23,6 +23,7 @@ class SitePageIndex extends SitePageBase
 			$page = $params[self::KEY_PAGE];
 		}
 
+		// TODO: move this site page creation into a factory
 		switch ($page){
 			case SitePageType::PERFORMER:
 				$pageObject = new SiteViewPerformer($this->store);

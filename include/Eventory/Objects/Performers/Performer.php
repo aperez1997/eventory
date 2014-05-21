@@ -104,12 +104,20 @@ class Performer extends ObjectAbstract
 		return $this->siteUrls;
 	}
 
+	/**
+	 * @deprecated
+	 * @param $eventId
+	 */
 	public function addEventId($eventId)
 	{
 		$this->updated = time();
 		$this->eventIds[$eventId] = $eventId;
 	}
 
+	/**
+	 * @deprecated
+	 * @param array $eventIds
+	 */
 	public function addEventIds(array $eventIds)
 	{
 		foreach ($eventIds as $eventId){
@@ -117,6 +125,10 @@ class Performer extends ObjectAbstract
 		}
 	}
 
+	/**
+	 * @deprecated
+	 * @param Event $event
+	 */
 	public function removeEvent(Event $event)
 	{
 		$id = $event->getId();

@@ -29,11 +29,10 @@ interface iStorageProvider
 	 */
 	public function loadEventsById(array $ids);
 
-
-        /**
-         * @param int $eventId
-         * @return Event
-         */
+    /**
+     * @param int $eventId
+     * @return Event
+     */
 	public function loadEventById($eventId);
 
 	/**
@@ -93,4 +92,16 @@ interface iStorageProvider
 	 * @param array $performers		Array of Performer
 	 */
 	public function savePerformers(array $performers);
+
+	/**
+	 * @param int|Performer $performer
+	 * @param int|event $event
+	 */
+	public function addPerformerToEvent($performer, $event);
+
+	/**
+	 * @param int|Performer $performer
+	 * @param int|event $event
+	 */
+	public function removePerformerFromEvent($performer, $event);
 }

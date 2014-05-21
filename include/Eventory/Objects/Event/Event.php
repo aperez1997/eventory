@@ -105,6 +105,10 @@ class Event
 		return array_keys($this->subUrls);
 	}
 
+	/**
+	 * @deprecated
+	 * @param Performer $performer
+	 */
 	public function addPerformer(Performer $performer)
 	{
 		if ($performer->isDeleted()){
@@ -116,6 +120,10 @@ class Event
 		$performer->addEventId($this->id);
 	}
 
+	/**
+	 * @deprecated
+	 * @param Performer $performer
+	 */
 	public function removePerformer(Performer $performer)
 	{
 		$id = $performer->getId();
@@ -141,11 +149,6 @@ class Event
 	public function getUpdated()
 	{
 		return $this->updated;
-	}
-
-	public function setUpdated($u)
-	{
-		$this->updated = $u;
 	}
 
 	public function getSortKey()

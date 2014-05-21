@@ -44,9 +44,7 @@ class SiteAdminEventPerformerAdd extends SitePageBase
 			return false;
 		}
 
-		$event->addPerformer($performer);
-		$this->store->saveEvents(array($event));
-		$this->store->savePerformers(array($performer));
+		$this->eventModel->addPerformerToEvent($performer, $event);
 
 		$this->setPostStatus(true, sprintf('Performer [%s] added to this event', $performer->getName()));
 
@@ -59,7 +57,7 @@ class SiteAdminEventPerformerAdd extends SitePageBase
 
 		$content = $this->renderContent($this->getTemplatesPath() . 'tmp_event_performer_add.php', $event);
 
-		return $this->renderMain($content);
+		return $this->renderMain($content, 'Eventory Admin: add performer');
 	}
 
 	protected function loadEvent($params, &$eventId = null)

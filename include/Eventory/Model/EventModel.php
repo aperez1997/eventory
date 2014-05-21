@@ -33,32 +33,28 @@ class EventModel
 
 		foreach ($namesFound as $name){
 			$performer = $this->store->createPerformer($name);
-			$event->addPerformer($performer);
+			$this->addPerformerToEvent($performer, $event);
 		}
-		// no save here
 	}
 
-
-	public function removePerformerIdFromEventId($performerId, $eventId)
+	public function addPerformerToEvent(Performer $performer, Event $event)
 	{
-		$performer	= $this->store->loadPerformerById($performerId);
-		$event		= $this->store->loadEventById($eventId);
-		if (!$performer instanceof Performer){
-                        throw new \Exception(sprintf('Invalid performer id [%s]', $performerId));
-                }
-		if (!$event instanceof Event){
-			 throw new \Exception(sprintf('Invalid event id [%s]', $eventId));
-		}
-		$this->removePerformerFromEvent($performer, $event);
+		$this->store->addPerformerToEvent($performer, $event);
+	}
+
+	public function addPerformerIdToEventId($performerId, $eventId)
+	{
+		$this->store->addPerformerToEvent($performerId, $eventId);
 	}
 
 	public function removePerformerFromEvent(Performer $performer, Event $event)
 	{
-		$event->removePerformer($performer);
-		$performer->removeEvent($event);
+		$this->store->removePerformerFromEvent($performer, $event);
+	}
 
-                $this->store->saveEvents(array($event));
-                $this->store->savePerformers(array($performer));		
+	public function removePerformerIdFromEventId($performerId, $eventId)
+	{
+		$this->store->removePerformerFromEvent($performerId, $eventId);
 	}
 
 	/**
@@ -91,13 +87,10 @@ class EventModel
 		$events = $this->store->loadEventsById($eventIds);
 		foreach ($events as $event){
 			/** @var Event $event */
-			$event->addPerformer($realPerformer);
-			$event->removePerformer($dupePerformer);
+			$this->addPerformerToEvent($realPerformer, $event);
+			$this->removePerformerFromEvent($dupePerformer, $event);
 		}
 		$this->store->deletePerformer($dupePerformer->getId());
-
-		$this->store->saveEvents($events);
-		$this->store->savePerformers(array($realPerformer, $dupePerformer));
 
 		return $events;
 	}

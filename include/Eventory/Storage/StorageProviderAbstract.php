@@ -42,4 +42,38 @@ abstract class StorageProviderAbstract implements iStorageProvider
 		$performers = array_filter($performers, $fn);
 		return array_map(function(Performer $p){ return $p->getName(); }, $performers);
 	}
+
+	/**
+	 * @param int|Event $eventId
+	 * @return Event
+	 * @throws \Exception
+	 */
+	protected function getEventFromId($eventId)
+	{
+		if ($eventId instanceof Performer){
+			return $eventId;
+		}
+		$event = $this->loadEventById($eventId);
+		if (!$event instanceof Event){
+			throw new \Exception(sprintf('Invalid Event id [%s]', $eventId));
+		}
+		return $event;
+	}
+
+	/**
+	 * @param int|Performer $performerId
+	 * @return Performer
+	 * @throws \Exception
+	 */
+	protected function getPerformerFromId($performerId)
+	{
+		if ($performerId instanceof Performer){
+			return $performerId;
+		}
+		$performer = $this->loadPerformerById($performerId);
+		if (!$performer instanceof Performer){
+			throw new \Exception(sprintf('Invalid performer id [%s]', $performerId));
+		}
+		return $performer;
+	}
 }
