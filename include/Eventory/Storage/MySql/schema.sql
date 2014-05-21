@@ -18,3 +18,9 @@ CREATE TABLE 'performers' (
 	PRIMARY KEY ('id'),
 	UNIQUE KEY 'name' ('name')
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE 'event_performers' (
+	'event_id' MEDIUMINT(8) UNSIGNED NOT NULL,
+	'performer_id' MEDIUMINT(8) UNSIGNED NOT NULL,
+	 UNIQUE KEY 'id' ('event_id', 'performer_id')
+);

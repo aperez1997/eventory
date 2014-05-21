@@ -233,6 +233,34 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		return $rv;
 	}
 
+	public function addPerformerToEvent($performer, $event)
+	{
+		$performer = $this->getPerformerFromId($performer);
+		$event = $this->getEventFromId($event);
+
+		$sql = "INSERT INTO event_performers (event_id, performer_id) VALUES (?,?)";
+		$stmt = $this->getConnection()->prepare($sql);
+		$stmt->bind_param('i', $performer->getId());
+		$stmt->bind_param('i', $event->getId());
+		if (!$stmt->execute()){
+			throw new \Exception('db failure');
+		}
+	}
+
+	public function removePerformerFromEvent($performer, $event)
+	{
+		$performer = $this->getPerformerFromId($performer);
+		$event = $this->getEventFromId($event);
+
+		$sql = "DELETE FROM event_performers WHERE event_id = ? AND performer_id = ?";
+		$stmt = $this->getConnection()->prepare($sql);
+		$stmt->bind_param('i', $performer->getId());
+		$stmt->bind_param('i', $event->getId());
+		if (!$stmt->execute()){
+			throw new \Exception('db failure');
+		}
+	}
+
 	/**
 	 * @return \mysqli
 	 */
