@@ -48,20 +48,29 @@ li {
    margin-bottom: 5px;
 }
 
+.assets ul {
+	padding-left: 0;
+}
+
 li.thumb {
     width: 20%;
-    min-width: 100px;
+    min-width: 150px;
     display: inline-block;
 }
 
 li.thumb.small {
     width: 14%;
-    min-width: 50px;
+    min-width: 100px;
     display: inline-block;
 }
 
+li.thumb.tiny {
+    width: 11%;
+    min-width: 50px;
+}
+
 li.thumb img {
-    width: 99%;
+    max-width: 99%;
 }
 
 .events .mono,
@@ -117,3 +126,11 @@ strong {
 {
     background-color: red;
 }
+
+button.copy {
+	background: url(http://icons.iconseeker.com/png/128/toolbar-icons/copy.png);
+	background-size: 100%;
+	font-size: 0;
+	height: 25px; width: 25px;
+}
+

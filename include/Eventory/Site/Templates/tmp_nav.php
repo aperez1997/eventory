@@ -1,6 +1,10 @@
 <ol class='nav'>
 	<?php foreach ($navItems as $navItemArr){
-		list($href, $text, $blank, $confirm) = $navItemArr;
+
+		$href = reset($navItemArr);
+		$text = next($navItemArr);
+		$blank = next($navItemArr);
+		$confirm = next($navItemArr);
 	?>
 	<li>
 		<a href="<?php echo $href; ?>" 

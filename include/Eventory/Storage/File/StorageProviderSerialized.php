@@ -76,6 +76,9 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 		$this->getEvents();
 		$events = array();
 		foreach ($ids as $id){
+			if (!is_string($id) && !is_int($id)){
+				throw new Exception(sprintf('invalid id [%s]', print_r($id,true)));
+			}
 			if (isset($this->events[$id])){
 				$events[$id] = $this->events[$id];
 			}

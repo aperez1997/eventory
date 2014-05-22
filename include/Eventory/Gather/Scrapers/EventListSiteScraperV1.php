@@ -69,7 +69,7 @@ abstract class EventListSiteScraperV1
 	/**
 	 * @return array[EventScrapeItems]
 	 */
-	protected function parseIntoEventScrapeItems($source)
+	public function parseIntoEventScrapeItems($source)
 	{
 		$scrapeItems = array();
 

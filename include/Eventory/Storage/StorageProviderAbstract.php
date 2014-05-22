@@ -50,7 +50,7 @@ abstract class StorageProviderAbstract implements iStorageProvider
 	 */
 	protected function getEventFromId($eventId)
 	{
-		if ($eventId instanceof Performer){
+		if ($eventId instanceof Event){
 			return $eventId;
 		}
 		$event = $this->loadEventById($eventId);
