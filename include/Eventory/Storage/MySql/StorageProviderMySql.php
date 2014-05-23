@@ -37,7 +37,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	 */
 	public function createEvent($url, $key)
 	{
-		$sql = "INSERT INTO events (url, key) values (?, ?)";
+		$sql = "INSERT INTO events (url, key, created) values (?, ?, NOW())";
 		$stmt = $this->getConnection()->prepare($sql);
 		$stmt->bind_param('s', $url);
 		$stmt->bind_param('s', $key);
@@ -139,7 +139,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	 */
 	public function createPerformer($name)
 	{
-		$sql = "INSERT INTO performers (name) values (?)";
+		$sql = "INSERT INTO performers (name, created) values (?, NOW())";
 		$stmt = $this->getConnection()->prepare($sql);
 		$stmt->bind_param('s', $name);
 		if (!$stmt->execute()){
@@ -245,6 +245,10 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		if (!$stmt->execute()){
 			throw new \Exception('db failure');
 		}
+
+		// update bookkeeping
+		$event->addPerformer($performer);
+		$performer->addEventId($event->getId());
 	}
 
 	public function removePerformerFromEvent($performer, $event)
@@ -259,6 +263,10 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		if (!$stmt->execute()){
 			throw new \Exception('db failure');
 		}
+
+		// update bookkeeping
+		$event->removePerformer($performer);
+		$performer->removeEvent($event);
 	}
 
 	/**

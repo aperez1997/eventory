@@ -63,8 +63,6 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 			$id = $event->getId();
 			$this->events[$id] = $event;
 		}
-		// will also save performers!
-		$this->saveDataToFile();
 	}
 
 	/**
@@ -158,7 +156,6 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 			$id = $performer->getId();
 			$this->performers[$id] = $performer;
 		}
-		$this->saveDataToFile();
 	}
 
 	/**
@@ -213,8 +210,6 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 			$event->removePerformer($performer);
 		}
 
-		$this->saveDataToFile();
-
 		return true;
 	}
 
@@ -224,8 +219,7 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 		$event = $this->getEventFromId($event);
 
 		$event->addPerformer($performer);
-		$performer->addEventId($event);
-		$this->saveDataToFile();
+		$performer->addEventId($event->getId());
 	}
 
 	public function removePerformerFromEvent($performer, $event)
@@ -235,7 +229,6 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 
 		$event->removePerformer($performer);
 		$performer->removeEvent($event);
-		$this->saveDataToFile();
 	}
 
 
@@ -321,5 +314,10 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 			self::KEY_PERFORMERS	=> $this->performers,
 		);
 		file_put_contents($this->fileName, serialize($data));
+	}
+
+	public function __destruct()
+	{
+		$this->saveDataToFile();
 	}
 }

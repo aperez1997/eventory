@@ -19,6 +19,7 @@ interface iStorageProvider
 	public function createEvent($url, $key);
 
 	/**
+	 * @deprecated
 	 * @param array $events		array of Event
 	 */
 	public function saveEvents(array $events);
@@ -89,6 +90,7 @@ interface iStorageProvider
 	public function deletePerformer($id);
 
 	/**
+	 * @deprecated
 	 * @param array $performers		Array of Performer
 	 */
 	public function savePerformers(array $performers);

@@ -27,7 +27,4 @@ if (count($events) != 1){
 $event = reset($events);
 
 $performer = $store->createPerformer($name);
-$event->addPerformer($performer);
-
-$store->saveEvents(array($event));
-$store->savePerformers(array($performer));
+$store->addPerformerToEvent($performer, $event);

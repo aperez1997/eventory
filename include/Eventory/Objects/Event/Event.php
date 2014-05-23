@@ -76,6 +76,10 @@ class Event
 		return $this->description;
 	}
 
+	/**
+	 * @deprecated
+	 * @param $assets
+	 */
 	public function addAssets($assets)
 	{
 		$this->updated = time();

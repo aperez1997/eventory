@@ -110,6 +110,9 @@ class Performer extends ObjectAbstract
 	 */
 	public function addEventId($eventId)
 	{
+		if ($eventId instanceof Event){
+			$eventId = $eventId->getId();
+		}
 		$this->updated = time();
 		$this->eventIds[$eventId] = $eventId;
 	}
