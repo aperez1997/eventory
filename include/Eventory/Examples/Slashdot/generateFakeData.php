@@ -24,7 +24,7 @@ $asset1->imageUrl = 'http://a.fsdn.com/sd/topics/intel_64.png';
 $asset1->text = 'intel';
 $asset1->key = 'icon';
 
-$event1->addAssets(array($asset1));
+$store->addAssetsToEvent($event1, array($asset1));
 
 $store->saveEvents(array($event1));
 $store->savePerformers(array($performer1, $performer2, $performer3));

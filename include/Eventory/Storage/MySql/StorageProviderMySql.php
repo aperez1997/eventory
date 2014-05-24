@@ -6,6 +6,7 @@
 
 namespace Eventory\Storage\MySql;
 
+use Eventory\Objects\Event\Assets\EventAsset;
 use Eventory\Objects\Event\Event;
 use Eventory\Objects\Performers\Performer;
 use Eventory\Storage\iStorageProvider;
@@ -68,10 +69,32 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			'description' => $event->getDescription(),
 		);
 		$rv = $this->updateRecord('events', $event->getId(), $updates);
-
-		// TODO: attachments
-
 		return $rv;
+	}
+
+	/**
+	 * @param int|Event $eventId
+	 * @param array $assets         Array of EventAsset
+	 */
+	public function addAssetsToEvent($eventId, array $assets)
+	{
+		$event = $this->getEventFromId($eventId);
+
+		foreach ($assets as $asset){
+			/** @var EventAsset $asset */
+			$sql = "INSERT INTO event_assets (event_id, key, type, hostUrl, imageUrl, linkUrl, text)
+					values (?, ?, ?, ?, ?, ?, ?)";
+			$stmt = $this->getConnection()->prepare($sql);
+			$this->bindParam($stmt, $event->getId());
+			$this->bindParam($stmt, $asset->key);
+			$this->bindParam($stmt, $asset->type);
+			$this->bindParam($stmt, $asset->hostUrl);
+			$this->bindParam($stmt, $asset->imageUrl);
+			$this->bindParam($stmt, $asset->linkUrl);
+			$this->bindParam($stmt, $asset->text);
+			$stmt->execute();
+		}
+		$event->addAssets($assets);
 	}
 
 	/**

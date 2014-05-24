@@ -75,7 +75,7 @@ abstract class EventSiteScraperV1
 
 		// update event with new data
 		$this->event->addSubUrls(array($this->eventScrapeItem->eventUrl));
-		$this->event->addAssets($this->parseGetAssets());
+		$this->store->addAssetsToEvent($this->event, $this->parseGetAssets());
 
 		$this->findPerformersForEvent();
 

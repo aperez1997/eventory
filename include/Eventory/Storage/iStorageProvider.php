@@ -25,6 +25,12 @@ interface iStorageProvider
 	public function saveEvents(array $events);
 
 	/**
+	 * @param int|Event $eventId
+	 * @param array $assets         Array of EventAsset
+	 */
+	public function addAssetsToEvent($eventId, array $assets);
+
+	/**
 	 * @param array $ids
 	 * @return array Event
 	 */

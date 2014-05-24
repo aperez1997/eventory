@@ -66,6 +66,16 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 	}
 
 	/**
+	 * @param int|Event $eventId
+	 * @param array $assets         Array of EventAsset
+	 */
+	public function addAssetsToEvent($eventId, array $assets)
+	{
+		$event = $this->getEventFromId($eventId);
+		$event->addAssets($assets);
+	}
+
+	/**
 	 * @param array $ids
 	 * @return array Event
 	 */
