@@ -76,6 +76,16 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 	}
 
 	/**
+	 * @param int|Event $eventId
+	 * @param array $subUrls        Array of string
+	 */
+	public function addSubUrlsToEvent($eventId, array $subUrls)
+	{
+		$event = $this->getEventFromId($eventId);
+		$event->addSubUrls($subUrls);
+	}
+
+	/**
 	 * @param array $ids
 	 * @return array Event
 	 */

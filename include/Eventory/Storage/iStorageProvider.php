@@ -31,6 +31,12 @@ interface iStorageProvider
 	public function addAssetsToEvent($eventId, array $assets);
 
 	/**
+	 * @param int|Event $eventId
+	 * @param array $subUrls        Array of string
+	 */
+	public function addSubUrlsToEvent($eventId, array $subUrls);
+
+	/**
 	 * @param array $ids
 	 * @return array Event
 	 */

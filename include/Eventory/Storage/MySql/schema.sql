@@ -19,6 +19,12 @@ CREATE TABLE `event_assets` (
 	UNIQUE KEY `event_key` (`event_id`, `key`)
 );
 
+CREATE TABLE `event_sub_urls` (
+	`event_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+	`url` varchar(255) NOT NULL,
+	UNIQUE KEY `event_url` (`event_id`, `url`)
+);
+
 CREATE TABLE `performers` (
 	`id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`name` varchar(255) NOT NULL,

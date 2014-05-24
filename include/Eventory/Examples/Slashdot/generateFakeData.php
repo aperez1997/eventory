@@ -15,7 +15,7 @@ $performer2->setHighlight(true);
 $url1 = 'http://hardware.slashdot.org/story/13/10/04/1735248/intel-launches-galileo-an-arduino-compatible-mini-computer';
 $event1 = $store->createEvent($url1, 'key1');
 $event1->description = "Although Intel is Chipzilla, the company can't help but extend its reach just a bit into the exciting and growing world of DIY makers and hobbyists.";
-$event1->addSubUrls(array($url1));
+$store->addSubUrlsToEvent($event1, array($url1));
 
 $store->addPerformerToEvent($performer1, $event1);
 

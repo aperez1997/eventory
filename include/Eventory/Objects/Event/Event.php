@@ -90,6 +90,10 @@ class Event
 		ksort($this->assets);
 	}
 
+	/**
+	 * @deprecated
+	 * @param array $subUrls
+	 */
 	public function addSubUrls(array $subUrls)
 	{
 		$this->updated = time();

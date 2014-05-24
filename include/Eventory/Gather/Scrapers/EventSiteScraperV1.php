@@ -74,7 +74,7 @@ abstract class EventSiteScraperV1
 		$this->htmlDom = file_get_html($subUrl);
 
 		// update event with new data
-		$this->event->addSubUrls(array($this->eventScrapeItem->eventUrl));
+		$this->store->addSubUrlsToEvent($this->event, array($this->eventScrapeItem->eventUrl));
 		$this->store->addAssetsToEvent($this->event, $this->parseGetAssets());
 
 		$this->findPerformersForEvent();

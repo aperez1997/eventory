@@ -83,7 +83,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		foreach ($assets as $asset){
 			/** @var EventAsset $asset */
 			$sql = "INSERT INTO event_assets (event_id, key, type, hostUrl, imageUrl, linkUrl, text)
-					values (?, ?, ?, ?, ?, ?, ?)";
+					VALUES (?, ?, ?, ?, ?, ?, ?)";
 			$stmt = $this->getConnection()->prepare($sql);
 			$this->bindParam($stmt, $event->getId());
 			$this->bindParam($stmt, $asset->key);
@@ -95,6 +95,23 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$stmt->execute();
 		}
 		$event->addAssets($assets);
+	}
+
+	/**
+	 * @param int|Event $eventId
+	 * @param array $subUrls        Array of string
+	 */
+	public function addSubUrlsToEvent($eventId, array $subUrls)
+	{
+		$event = $this->getEventFromId($eventId);
+		foreach ($subUrls as $subUrl){
+			$sql = "INSERT INTO event_sub_urls (event_id, url) VALUES (?, ?)";
+			$stmt = $this->getConnection()->prepare($sql);
+			$this->bindParam($stmt, $event->getId());
+			$this->bindParam($stmt, $subUrl);
+			$stmt->execute();
+		}
+		$event->addSubUrls($subUrls);
 	}
 
 	/**
