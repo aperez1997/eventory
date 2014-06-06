@@ -15,5 +15,4 @@ $siteScraperFactory = new ExampleSiteScraperFactory($storeProvider);
 $siteListScraper = new SlashdotListSiteScraper($siteScraperFactory);
 printf("Scraping slashdot\n");
 $events = $siteListScraper->scrapeFromWeb();
-printf("writing\n");
-$storeProvider->saveEvents($events);
+printf("done\n");

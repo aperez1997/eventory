@@ -44,7 +44,7 @@ abstract class EventListSiteScraperV1
 				break;
 			}
 		}
-		return $events;
+		return array();
 	}
 
 	/**

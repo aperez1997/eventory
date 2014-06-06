@@ -82,6 +82,9 @@ abstract class EventSiteScraperV1
 		// Any extra data will be handled here
 		$this->findExtraData();
 
+        // Save any updates
+        $this->store->saveEvents(array($this->event));
+
 		usleep(1000000 / $this->ratePerSecond);
 
 		return;
