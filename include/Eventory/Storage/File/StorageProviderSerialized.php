@@ -61,11 +61,6 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 	public function saveEvents(array $events)
 	{
 		$this->getEvents();
-		foreach ($events as $event){
-			/** @var Event $event */
-			$id = $event->getId();
-			$this->events[$id] = $event;
-		}
 		$this->dirty = true;
 	}
 
@@ -326,6 +321,11 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 	{
 		foreach ($this->events as $event){
 			/** @var Event $event */
+			if (!$event instanceof Event){
+			    // TODO: figure out what is happening here
+			    continue;
+			}
+
 			$this->keyToIdxMap[$event->getKey()] = $event->getId();
 			$this->fixMissingDataEvent($event);
 		}
