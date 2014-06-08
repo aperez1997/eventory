@@ -319,10 +319,11 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 
 	protected function initKeyMap()
 	{
-		foreach ($this->events as $event){
+		foreach ($this->events as $k => $event){
 			/** @var Event $event */
 			if (!$event instanceof Event){
 			    // TODO: figure out what is happening here
+			    unset($this->events[$k]);
 			    continue;
 			}
 
