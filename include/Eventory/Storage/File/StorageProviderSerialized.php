@@ -48,10 +48,11 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 		}
 
 		$event = Event::CreateNew($url, $key);
-		$id = count($this->events) + 1;
+		$id = end($this->events)->id + 1;
 		$event->id = $id;
 		$this->events[$id] = $event;
 		$this->dirty = true;
+		error_log(sprintf("creating event %s %s", $id, $key));
 		return $event;
 	}
 
@@ -306,7 +307,10 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 
 	protected function readVersion1($data)
 	{
-		$this->events		= $data[self::KEY_EVENTS];
+		$events			= $data[self::KEY_EVENTS];
+		foreach ($events as $k => $v){
+			$this->events[$k] = $v;
+		}
 		$this->performers	= $data[self::KEY_PERFORMERS];
 	}
 
@@ -322,8 +326,8 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 		foreach ($this->events as $k => $event){
 			/** @var Event $event */
 			if (!$event instanceof Event){
-			    // TODO: figure out what is happening here
 			    unset($this->events[$k]);
+			error_log("invalid event [". $k ."] [". print_r($event, true));
 			    continue;
 			}
 
