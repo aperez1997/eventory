@@ -6,7 +6,9 @@
 
 namespace Eventory\Objects\Event\Assets;
 
-class EventAsset
+use Eventory\Objects\ObjectAbstract;
+
+class EventAsset extends ObjectAbstract
 {
 	public $key;
 	public $type;
@@ -14,4 +16,11 @@ class EventAsset
 	public $imageUrl;
 	public $linkUrl;
 	public $text;
+
+	public static function CreateFromData($data)
+	{
+		$event = new EventAsset();
+		$event->loadFromData($data);
+		return $event;
+	}
 }

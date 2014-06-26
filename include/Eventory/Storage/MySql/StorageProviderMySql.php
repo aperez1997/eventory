@@ -123,6 +123,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$event = Event::CreateFromData($result);
 			$events[$event->getId()] = $event;
 		}
+		$this->postEventLoad($events);
 		return $events;
 	}
 
@@ -137,7 +138,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		if (empty($results)){
 			return null;
 		}
-		return Event::CreateFromData(reset($results));
+		$event = Event::CreateFromData(reset($results));
+		$this->postEventLoad($event);
+		return $event;
 	}
 
 	/**
@@ -161,11 +164,12 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			throw new \Exception('db failure');
 		}
 		$res = $stmt->get_result();
-		if ($row = $res->fetch_assoc()){
-			return Event::CreateFromData($row);
-		} else {
-			return null;
+		$events = array();
+		while ($row = $res->fetch_assoc()){
+			$events[] = Event::CreateFromData($row);
 		}
+		$this->postEventLoad($events);
+		return $events;
 	}
 
 	/**
@@ -306,6 +310,54 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	}
 
 	/**
+	 * Load all data for the given array of event objects
+	 * This is really inefficient as some of this data may not be needed for every use-case
+	 * Unfortunately the data-model does not support load-on-demand yet
+	 * @param array|Event $events
+	 */
+	protected function postEventLoad($events)
+	{
+		if (!is_array($events)){
+			$events = array($events);
+		}
+
+		$eventsById = array();
+		foreach ($events as $event){
+			/** @var Event $event */
+			$eventId = $event->getId();
+			$eventsById[$eventId] = $event;
+		}
+		$eventIds = array_keys($eventsById);
+
+		// load assets
+		$assets = $this->fetchResultsByIds('event_assets', $eventIds, 'event_id');
+		foreach ($assets as $row){
+			$eventAsset = EventAsset::CreateFromData($row);
+			$eventId = $row['event_id'];
+			$event = $eventsById[$eventId];
+			$event->addAssets($eventAsset);
+		}
+
+		// load sub urls
+		$subUrls = $this->fetchResultsByIds('event_sub_urls', $eventIds, 'event_id');
+		foreach ($subUrls as $row){
+			$eventId = $row['event_id'];
+			$url = $row['url'];
+			$event = $eventsById[$eventId];
+			$event->addSubUrls($url);
+		}
+
+		// load performers
+		$performers = $this->fetchResultsByJoinIds('event_performers', 'performers', 'performer_id', 'event_id', $eventIds);
+		foreach ($performers as $row){
+			$eventId = $row['event_id'];
+			$performer = Performer::CreateFromData($row);
+			$event = $eventsById[$eventId];
+			$event->addPerformer($performer);
+		}
+	}
+
+	/**
 	 * @return \mysqli
 	 */
 	protected function getConnection()
@@ -356,6 +408,33 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$results = array();
 		while ($row = $res->fetch_assoc()){
 			$results[] = $row;
+		}
+		return $results;
+	}
+
+	protected function fetchResultsByJoinIds($joinTable, $dataTable, $joinCol, $idCol2, array $ids)
+	{
+		$sqlBinds = join(', ', array_map(function(){return '?';}, $ids));
+
+		$sql = sprintf(
+			"SELECT b.* FROM %s a LEFT JOIN %s b ON (a.%s = b.%s) WHERE a.%s IN (%s)",
+			$joinTable, $dataTable, $joinCol, $joinCol, $idCol2, $sqlBinds
+		);
+		$stmt = $this->getConnection()->prepare($sql);
+		foreach ($ids as $id){
+			$stmt->bind_param('i', $id);
+		}
+		if (!$stmt->execute()){
+			throw new \Exception('db failure');
+		}
+		$res = $stmt->get_result();
+		$results = array();
+		while ($row = $res->fetch_assoc()){
+			if (isset($row[$idCol2])){
+				$results[] = $res;
+			} else {
+				$results[] = $res;
+			}
 		}
 		return $results;
 	}

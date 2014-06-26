@@ -6,9 +6,10 @@
 namespace Eventory\Objects\Event;
 
 use Eventory\Objects\Event\Assets\EventAsset;
+use Eventory\Objects\ObjectAbstract;
 use Eventory\Objects\Performers\Performer;
 
-class Event
+class Event extends ObjectAbstract
 {
 	public static function CreateNew($url, $key)
 	{
@@ -21,11 +22,7 @@ class Event
 	public static function CreateFromData($data)
 	{
 		$event = new Event();
-		foreach ($event as $k => $v){
-			if (isset($data[$k])){
-				$event->$k = $data->$k;
-			}
-		}
+		$event->loadFromData($data);
 		return $event;
 	}
 
@@ -81,6 +78,10 @@ class Event
 	 */
 	public function addAssets($assets)
 	{
+		if (!is_array($assets)){
+			$assets = array($assets);
+		}
+
 		$this->updated = time();
 		foreach ($assets as $asset){
 			/** @var EventAsset $asset */
@@ -93,8 +94,12 @@ class Event
 	 * @deprecated
 	 * @param array $subUrls
 	 */
-	public function addSubUrls(array $subUrls)
+	public function addSubUrls($subUrls)
 	{
+		if (!is_array($subUrls)){
+			$subUrls = array($subUrls);
+		}
+
 		$this->updated = time();
 		foreach ($subUrls as $subUrl){
 			$this->subUrls[$subUrl] = $subUrl;
