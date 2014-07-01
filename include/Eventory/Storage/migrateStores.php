@@ -22,4 +22,9 @@ for ($i = 0; $i < 10000; $i++){
 	$newEvent = $storeProviderDB->createEvent($event->eventUrl, $event->eventKey);
 	$newEvent->description = $event->description;
 	$newEvent->setCreated($event->getCreated());
+
+	// TODO assets, sub-urls, performers
+
+
+	$storeProviderDB->saveEvents(array($newEvent));
 }

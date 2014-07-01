@@ -9,6 +9,9 @@ use Eventory\Storage\iStorageProvider;
 use Eventory\Storage\StorageProviderAbstract;
 use Eventory\Utils\ArrayUtils;
 
+/**
+ * TODO: performer site urls, updated updating
+ */
 class StorageProviderMySql extends StorageProviderAbstract implements iStorageProvider
 {
 	protected $conn;
@@ -63,9 +66,26 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			'key' => $event->getKey(),
 			'url' => $event->eventUrl,
 			'description' => $event->getDescription(),
+			// TODO: remove this line
+			'updated' => $event->getUpdated()
 		);
 		$rv = $this->updateRecord('events', $event->getId(), $updates);
 		return $rv;
+	}
+
+	/**
+	 * Used to mark that an event was updated now
+	 * @param Event $event
+	 * @throws \Exception
+	 */
+	protected function markEventUpdated(Event $event)
+	{
+		$sql = "UPDATE events SET updated = NOW() WHERE id = ?";
+		$stmt = $this->getConnection()->prepare($sql);
+		$this->bindParam($stmt, $event->getId());
+		if (!$stmt->execute()){
+			throw new \Exception('db failure');
+		}
 	}
 
 	/**
@@ -76,8 +96,18 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	{
 		$event = $this->getEventFromId($eventId);
 
+		$existingAssets = $event->getAssets();
+		$existingAssets = ArrayUtils::ReindexByProperty($existingAssets, 'key');
+
+		$changed = false;
 		foreach ($assets as $asset){
 			/** @var EventAsset $asset */
+			if (array_key_exists($asset->key, $existingAssets)){
+				// skip any assets we already have
+				continue;
+			}
+			$changed = true;
+
 			$sql = "INSERT INTO event_assets (event_id, key, type, hostUrl, imageUrl, linkUrl, text)
 					VALUES (?, ?, ?, ?, ?, ?, ?)";
 			$stmt = $this->getConnection()->prepare($sql);
@@ -91,6 +121,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$stmt->execute();
 		}
 		$event->addAssets($assets);
+		if ($changed){
+			$this->markEventUpdated($event);
+		}
 	}
 
 	/**
@@ -100,7 +133,15 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	public function addSubUrlsToEvent($eventId, array $subUrls)
 	{
 		$event = $this->getEventFromId($eventId);
+
+		$changed = false;
 		foreach ($subUrls as $subUrl){
+			if (in_array($subUrl, $event->getSubUrls())){
+				// skip any subUrls we already have
+				continue;
+			}
+
+			$changed = true;
 			$sql = "INSERT INTO event_sub_urls (event_id, url) VALUES (?, ?)";
 			$stmt = $this->getConnection()->prepare($sql);
 			$this->bindParam($stmt, $event->getId());
@@ -108,6 +149,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$stmt->execute();
 		}
 		$event->addSubUrls($subUrls);
+		if ($changed){
+			$this->markEventUpdated($event);
+		}
 	}
 
 	/**
@@ -179,6 +223,10 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	 */
 	public function createPerformer($name)
 	{
+		$lookup = $this->loadPerformerByName($name);
+		if ($lookup instanceof Performer){
+			return $lookup;
+		}
 		$sql = "INSERT INTO performers (name, created) values (?, NOW())";
 		$stmt = $this->getConnection()->prepare($sql);
 		$stmt->bind_param('s', $name);
@@ -203,6 +251,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$event = Performer::CreateFromData($result);
 			$performers[$event->getId()] = $event;
 		}
+		$this->postPerformerLoad($performers);
 		return $performers;
 	}
 
@@ -217,7 +266,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		if (empty($results)){
 			return null;
 		}
-		return Performer::CreateFromData(reset($results));
+		$performer = Performer::CreateFromData(reset($results));
+		$this->postPerformerLoad($performer);
+		return $performer;
 	}
 
 	/**
@@ -236,6 +287,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		while ($row = $res->fetch_assoc()){
 			$performers[] = Performer::CreateFromData($row);
 		}
+		$this->postPerformerLoad($performers);
 		return $performers;
 	}
 
@@ -268,7 +320,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		);
 		$rv = $this->updateRecord('performers', $performer->getId(), $updates);
 
-		// todo: siteUrls, eventIds
+		// todo: siteUrls
 
 		return $rv;
 	}
@@ -277,6 +329,11 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	{
 		$performer = $this->getPerformerFromId($performer);
 		$event = $this->getEventFromId($event);
+
+		if (in_array($performer->getId(), $event->getPerformerIds())){
+			// don't add twice
+			return;
+		}
 
 		$sql = "INSERT INTO event_performers (event_id, performer_id) VALUES (?,?)";
 		$stmt = $this->getConnection()->prepare($sql);
@@ -347,13 +404,32 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$event->addSubUrls($url);
 		}
 
-		// load performers
+		// load performers ids/names
 		$performers = $this->fetchResultsByJoinIds('event_performers', 'performers', 'performer_id', 'event_id', $eventIds);
 		foreach ($performers as $row){
 			$eventId = $row['event_id'];
 			$performer = Performer::CreateFromData($row);
 			$event = $eventsById[$eventId];
 			$event->addPerformer($performer);
+		}
+	}
+
+	protected function postPerformerLoad($performers)
+	{
+		if (!is_array($performers)){
+			$performers = array($performers);
+		}
+
+		$performersById = ArrayUtils::ReindexByMethod($performers, 'getId');
+		$performerIds = array_keys($performers);
+
+		// load event ids
+		$events = $this->fetchResultsByIds('event_performers', $performerIds, 'performer_id');
+		foreach ($events as $row){
+			$performerId = $row['performer_id'];
+			/** @var Performer $performer */
+			$performer = $performersById[$performerId];
+			$performer->addEventId($row['event_id']);
 		}
 	}
 
