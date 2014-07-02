@@ -32,6 +32,9 @@ class Performer extends ObjectAbstract
 		}
 		$performer->convertTinyIntToBool('deleted');
 		$performer->convertTinyIntToBool('highlight');
+		if (isset($data['site_urls']) && is_string($data['site_urls'])){
+		    $performer->siteUrls = explode(',', $data['site_urls']);
+		}
 		return $performer;
 	}
 

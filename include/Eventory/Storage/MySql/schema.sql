@@ -30,6 +30,7 @@ CREATE TABLE `performers` (
 	`name` varchar(255) NOT NULL,
 	`imageUrl` varchar(255) DEFAULT NULL,
 	`highlight` TINYINT(1) NOT NULL DEFAULT 0,
+	`site_urls` TEXT DEFAULT NULL,
 	`created` DATETIME NOT NULL,
 	`updated` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`),

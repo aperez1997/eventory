@@ -10,7 +10,7 @@ use Eventory\Storage\StorageProviderAbstract;
 use Eventory\Utils\ArrayUtils;
 
 /**
- * TODO: performer site urls, updated updating
+ * TODO: updated updating
  */
 class StorageProviderMySql extends StorageProviderAbstract implements iStorageProvider
 {
@@ -317,10 +317,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			'imageUrl' => $performer->getImageUrl(),
 			'highlight' => $performer->isHighlighted(),
 			'deleted' => $performer->isDeleted(),
+			'site_urls' => join(',', $performer->getSiteUrls()),
 		);
 		$rv = $this->updateRecord('performers', $performer->getId(), $updates);
-
-		// todo: siteUrls
 
 		return $rv;
 	}
