@@ -30,8 +30,8 @@ class Event extends ObjectAbstract
 	public $eventKey;
 	public $eventUrl;
 	public $description;
-	protected $created;
-	protected $updated;
+	public $created;
+	public $updated;
 
 	/** @var array EventAsset */
 	public $assets = array();

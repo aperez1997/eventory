@@ -67,6 +67,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			'url' => $event->eventUrl,
 			'description' => $event->getDescription(),
 			// TODO: remove this line
+			'created' => $event->getCreated(),
 			'updated' => $event->getUpdated()
 		);
 		$rv = $this->updateRecord('events', $event->getId(), $updates);
