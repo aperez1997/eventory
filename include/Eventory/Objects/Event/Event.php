@@ -30,8 +30,8 @@ class Event extends ObjectAbstract
 	public $eventKey;
 	public $eventUrl;
 	public $description;
-	public $created;
-	public $updated;
+	protected $created;
+	protected $updated;
 
 	/** @var array EventAsset */
 	public $assets = array();
@@ -155,7 +155,7 @@ class Event extends ObjectAbstract
 	public function setCreated($created)
 	{
 		$this->created = $created;
-		$this->updated = $created;
+		$this->updated = $updated;
 	}
 
 	public function getUpdated()
@@ -163,9 +163,17 @@ class Event extends ObjectAbstract
 		return $this->updated;
 	}
 
+	public function setUpdated($u){
+		$this->updated = $u;
+	}
+
 	public function getSortKey()
 	{
 		$assetFactor = count($this->assets) * 360;
 		return $this->updated + $assetFactor;
 	}
+
+        public function getImageEventUrl(){
+                return sprintf('/image.php?url=%s', $this->eventUrl);
+        }
 }
