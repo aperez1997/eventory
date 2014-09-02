@@ -1,3 +1,4 @@
+DROP TABLE `events`;
 CREATE TABLE `events` (
   `id` MEDIUMINT(8) unsigned NOT NULL AUTO_INCREMENT,
   `key` VARCHAR(255) NOT NULL,
@@ -8,6 +9,7 @@ CREATE TABLE `events` (
   UNIQUE KEY `key` (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE `event_assets`;
 CREATE TABLE `event_assets` (
 	`event_id` MEDIUMINT(8) UNSIGNED NOT NULL,
 	`key` varchar(255) NOT NULL,
@@ -19,12 +21,14 @@ CREATE TABLE `event_assets` (
 	UNIQUE KEY `event_key` (`event_id`, `key`)
 );
 
+DROP TABLE `event_sub_urls`;
 CREATE TABLE `event_sub_urls` (
 	`event_id` MEDIUMINT(8) UNSIGNED NOT NULL,
 	`url` varchar(255) NOT NULL,
 	UNIQUE KEY `event_url` (`event_id`, `url`)
 );
 
+DROP TABLE `performers`;
 CREATE TABLE `performers` (
 	`id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`name` varchar(255) NOT NULL,
@@ -37,6 +41,7 @@ CREATE TABLE `performers` (
 	UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE `event_performers`;
 CREATE TABLE `event_performers` (
 	`event_id` MEDIUMINT(8) UNSIGNED NOT NULL,
 	`performer_id` MEDIUMINT(8) UNSIGNED NOT NULL,
