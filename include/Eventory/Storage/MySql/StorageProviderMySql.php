@@ -37,7 +37,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	 */
 	public function createEvent($url, $key)
 	{
-		$sql = "INSERT INTO events (url, key, created) values (?, ?, NOW())";
+		$sql = "INSERT INTO events (url, `key`, created) values (?, ?, NOW())";
 		$stmt = $this->getConnection()->prepare($sql);
 		$stmt->bind_param('s', $url);
 		$stmt->bind_param('s', $key);
@@ -109,7 +109,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			}
 			$changed = true;
 
-			$sql = "INSERT INTO event_assets (event_id, key, type, hostUrl, imageUrl, linkUrl, text)
+			$sql = "INSERT INTO event_assets (event_id, `key`, `type`, hostUrl, imageUrl, linkUrl, text)
 					VALUES (?, ?, ?, ?, ?, ?, ?)";
 			$stmt = $this->getConnection()->prepare($sql);
 			$this->bindParam($stmt, $event->getId());
@@ -474,7 +474,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 
 	protected function fetchResultsByKey($table, $keyCol, $keyVal)
 	{
-		$sql = sprintf("SELECT * FROM %s WHERE %s = ?", $table, $keyCol);
+		$sql = sprintf("SELECT * FROM `%s` WHERE `%s` = ?", $table, $keyCol);
 		$stmt = $this->getConnection()->prepare($sql);
 		$this->bindParam($stmt, $keyVal);
 		if (!$stmt->execute()){
@@ -493,7 +493,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$sqlBinds = join(', ', array_map(function(){return '?';}, $ids));
 
 		$sql = sprintf(
-			"SELECT b.* FROM %s a LEFT JOIN %s b ON (a.%s = b.%s) WHERE a.%s IN (%s)",
+			"SELECT b.* FROM %s a LEFT JOIN %s b ON (a.`%s` = b.`%s`) WHERE a.`%s` IN (%s)",
 			$joinTable, $dataTable, $joinCol, $joinCol, $idCol2, $sqlBinds
 		);
 		$stmt = $this->getConnection()->prepare($sql);
@@ -522,9 +522,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		}
 		$sql = sprintf("UPDATE %s SET ", $table);
 		foreach ($updates as $k => $v){
-			$sql .= sprintf('%s = ?', $k);
+			$sql .= sprintf('`%s` = ?', $k);
 		}
-		$sql .= sprintf('WHERE %s = ?', $idCol);
+		$sql .= sprintf('WHERE `%s` = ?', $idCol);
 		$stmt = $this->getConnection()->prepare($sql);
 		foreach ($updates as $v){
 			$this->bindParam($stmt, $v);

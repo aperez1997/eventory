@@ -1,6 +1,7 @@
 <?php
 
 use Eventory\Objects\Event\Event;
+use Eventory\Objects\Performers\Performer;
 use Eventory\Storage\File\StorageProviderSerialized;
 use Eventory\Storage\MySql\StorageProviderMySql;
 
@@ -26,8 +27,8 @@ for ($i = 0; $i < 10000; $i++){
 
 	$newEvent = $storeProviderDB->createEvent($event->eventUrl, $event->eventKey);
 	$newEvent->description = $event->description;
-	$newEvent->created = $event->getCreated();
-	$newEvent->updated = $event->getUpdated();
+	$newEvent->setCreated($event->getCreated());
+	$newEvent->setUpdated($event->getUpdated());
 	$storeProviderDB->saveEvents(array($newEvent));
 
 
@@ -39,7 +40,9 @@ for ($i = 0; $i < 10000; $i++){
 
 // performers
 foreach ($storeProviderFile->loadAllPerformers() as $performer){
-    $newPerf = $storeProviderDB->createPerformer($performer->getName());
+	/** @var Performer $performer*/
+	/** @var Performer $newPerf */
+	$newPerf = $storeProviderDB->createPerformer($performer->getName());
     $newPerf->setImageUrl($performer->getImageUrl());
     $newPerf->setHighlight($performer->isHighlighted());
     foreach ($performer->getSiteUrls() as $url){
@@ -48,6 +51,6 @@ foreach ($storeProviderFile->loadAllPerformers() as $performer){
     $storeProviderDb->savePerformer($newPerf);
 
     foreach ($performer->getEventIds() as $eventId){
-        $storeProviderDb->addPerformerToEvent($newPerformer, $eventId);
+        $storeProviderDb->addPerformerToEvent($newPerf, $eventId);
     }
 }
