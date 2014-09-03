@@ -1,23 +1,23 @@
 <?php
 
+require_once __DIR__ . '/../bootstrap.php';
+
 use Eventory\Objects\Event\Event;
 use Eventory\Objects\Performers\Performer;
 use Eventory\Storage\File\StorageProviderSerialized;
 use Eventory\Storage\MySql\StorageProviderMySql;
 
-if ($argc <= 1){
-	printf("Usage:%s <dbpassword>\n", __FILE__);
-	exit(-1);
-}
 
 $fileName = __DIR__ .'/slashdot.data';
 $storeProviderFile = new StorageProviderSerialized($fileName);
 
 $dbHost = 'localhost';
-$dbUser = 'user';
-$dbPass = $argv[1];
+$dbUser = 'root';
+$dbPass = 'tempDawg1crizal';
 $dbName = 'eventory';
 $storeProviderDB = new StorageProviderMySql($dbHost, $dbUser, $dbPass, $dbName);
+
+try {
 
 for ($i = 0; $i < 10000; $i++){
 	$event = $storeProviderFile->loadEventById($i);
@@ -33,9 +33,7 @@ for ($i = 0; $i < 10000; $i++){
 
 
 	$storeProviderDB->addAssetsToEvent($newEvent, $event->getAssets());
-	foreach ($event->getSubUrls() as $subUrl){
-	    $storeProviderDB->addSubUrlsToEvent($newEvent, $subUrl);
-	}
+	$storeProviderDB->addSubUrlsToEvent($newEvent, $event->getSubUrls());
 }
 
 // performers
@@ -53,4 +51,8 @@ foreach ($storeProviderFile->loadAllPerformers() as $performer){
     foreach ($performer->getEventIds() as $eventId){
         $storeProviderDb->addPerformerToEvent($newPerf, $eventId);
     }
+}
+
+} catch (Exception $ex){
+	printf("Exception (%s) %s\n@ %s", get_class($ex), $ex->getMessage(), $ex->getTraceAsString());
 }

@@ -155,7 +155,7 @@ class Event extends ObjectAbstract
 	public function setCreated($created)
 	{
 		$this->created = $created;
-		$this->updated = $updated;
+		$this->updated = $created;
 	}
 
 	public function getUpdated()

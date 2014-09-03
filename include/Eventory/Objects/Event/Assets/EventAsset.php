@@ -23,4 +23,8 @@ class EventAsset extends ObjectAbstract
 		$event->loadFromData($data);
 		return $event;
 	}
+
+	public function getImageProxyUrl(){
+		return sprintf('/image.php?url=%s', $this->imageUrl);
+	}
 }

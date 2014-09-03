@@ -111,8 +111,11 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$sql = "INSERT INTO event_assets (event_id, `key`, `type`, hostUrl, imageUrl, linkUrl, text)
 					VALUES (?, ?, ?, ?, ?, ?, ?)";
 			$stmt = $this->getConnection()->prepare($sql);
-			$this->bindParams($stmt, array($event->getId(), $asset->key, $asset->type, $asset->hostUrl, $asset->imageUrl, $asset->linkUrl, $asset->text));
-			$stmt->execute();
+			$binds = array($event->getId(), $asset->key, $asset->type, $asset->hostUrl, $asset->imageUrl, $asset->linkUrl, $asset->text);
+			$this->bindParams($stmt, $binds);
+			if (!$stmt->execute()){
+				throw new \Exception(sprintf('db failure: %s from %s w %s', $stmt->error, $sql, print_r($binds, true)));
+			}
 		}
 		$event->addAssets($assets);
 		if ($changed){
@@ -139,7 +142,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$sql = "INSERT INTO event_sub_urls (event_id, url) VALUES (?, ?)";
 			$stmt = $this->getConnection()->prepare($sql);
 			$this->bindParams($stmt, array($event->getId(), $subUrl));
-			$stmt->execute();
+			if (!$stmt->execute()){
+				throw new \Exception(sprintf('db failure %s', $stmt->error));
+			}
 		}
 		$event->addSubUrls($subUrls);
 		if ($changed){
@@ -503,17 +508,17 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 
 	protected function updateRecord($table, $idVal, array $updates, $idCol = null)
 	{
-		if (!$idCol === null){
+		if ($idCol === null){
 			$idCol = 'id';
 		}
 		$sql = sprintf("UPDATE %s SET ", $table);
 		$sqlUpdates = array_map(function ($k){ return sprintf('`%s` = ?', $k); }, array_keys($updates));
 		$sql .= join(',', $sqlUpdates);
-	    $updates[$idCol] = $idVal;
-		$sql .= sprintf('WHERE `%s` = ?', $idCol);
+		$updates[$idCol] = $idVal;
+		$sql .= sprintf(' WHERE `%s` = ?', $idCol);
 		$stmt = $this->getConnection()->prepare($sql);
 		if ($stmt === false){
-            throw new \Exception(sprintf('db failure %s', $this->getConnection()->error));
+        		throw new \Exception(sprintf('db failure %s from %s', $this->getConnection()->error, $sql));
 		}
 		$this->bindParams($stmt, $updates);
 		return $stmt->execute();
@@ -532,17 +537,34 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	{
 	    $bindStr = '';
 	    foreach ($values as $k => $value){
-            if (is_string($value)){
-                $bindStr .= 's';
-            } else if (is_bool($value)){
-                $values[$k] = $value ? 1 : 0;
-                $bindStr .= 'i';
-            } else if (is_int($value)){
-                $bindStr .= 'i';
-            } else {
-                throw new \Exception(sprintf('Unsupported value type %s', gettype($value)));
-            }
+ 	        if (is_string($value)){
+        	        $bindStr .= 's';
+            	} else if (is_bool($value)){
+                	$values[$k] = $value ? 1 : 0;
+                	$bindStr .= 'i';
+            	} else if (is_int($value)){
+                	$bindStr .= 'i';
+		} else if (is_null($value)){
+			$bindStr .= 'i';
+ 	        } else {
+        		throw new \Exception(sprintf('Unsupported value type %s', gettype($value)));
+            	}
 	    }
-	    $stmt->bind_param($bindStr, array_values($values));
+		
+		$args = array_values($values);
+		array_unshift($args, $bindStr);
+		call_user_func_array(array($stmt, 'bind_param'), refValues($args));
 	}
 }
+
+function refValues($arr){
+    if (strnatcmp(phpversion(),'5.3') >= 0) //Reference is required for PHP 5.3+
+    {
+        $refs = array();
+        foreach($arr as $key => $value)
+            $refs[$key] = &$arr[$key];
+        return $refs;
+    }
+    return $arr;
+}
+

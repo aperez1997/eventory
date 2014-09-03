@@ -3,6 +3,7 @@ CREATE TABLE `events` (
   `id` MEDIUMINT(8) unsigned NOT NULL AUTO_INCREMENT,
   `key` VARCHAR(255) NOT NULL,
   `url` varchar(255) DEFAULT NULL,
+  `description` text,
   `created` datetime NOT NULL,
   `updated` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
