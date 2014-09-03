@@ -41,7 +41,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$stmt = $this->getConnection()->prepare($sql);
 		$stmt->bind_param('ss', $url, $key);
 		if (!$stmt->execute()){
-			throw new \Exception('db failure');
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
 
 		$event = Event::CreateNew($url, $key);
@@ -198,7 +198,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$sql = sprintf("SELECT * FROM events ORDER BY updated DESC %s", $limitSQL);
 		$stmt = $this->getConnection()->prepare($sql);
 		if (!$stmt->execute()){
-			throw new \Exception('db failure');
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
 		$res = $stmt->get_result();
 		$events = array();
@@ -224,7 +224,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$stmt = $this->getConnection()->prepare($sql);
 		$stmt->bind_param('s', $name);
 		if (!$stmt->execute()){
-			throw new \Exception('db failure');
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
 
 		$performer = Performer::CreateNew($name);
@@ -273,7 +273,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$sql = "SELECT * FROM performers";
 		$stmt = $this->getConnection()->prepare($sql);
 		if (!$stmt->execute()){
-			throw new \Exception('db failure');
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
 		$res = $stmt->get_result();
 		$performers = array();
@@ -331,7 +331,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$stmt = $this->getConnection()->prepare($sql);
 		$stmt->bind_param('ii', $performer->getId(), $event->getId());
 		if (!$stmt->execute()){
-			throw new \Exception('db failure');
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
 
 		// update bookkeeping
@@ -348,7 +348,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$stmt = $this->getConnection()->prepare($sql);
 		$stmt->bind_param('ii', $performer->getId(), $event->getId());
 		if (!$stmt->execute()){
-			throw new \Exception('db failure');
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
 
 		// update bookkeeping
@@ -466,7 +466,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$stmt = $this->getConnection()->prepare($sql);
 		$this->bindParams($stmt, $keyVal);
 		if (!$stmt->execute()){
-			throw new \Exception('db failure');
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
 		$res = $stmt->get_result();
 		$results = array();
@@ -487,7 +487,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$stmt = $this->getConnection()->prepare($sql);
 		$this->bindParams($stmt, $ids);
 		if (!$stmt->execute()){
-			throw new \Exception('db failure');
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
 		$res = $stmt->get_result();
 		$results = array();
@@ -513,7 +513,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	    $updates['id'] = $idVal;
 		$sql .= sprintf('WHERE `%s` = ?', $idCol);
 		$stmt = $this->getConnection()->prepare($sql);
-		if (!$stmt === false){
+		if ($stmt === false){
             throw new \Exception(sprintf('db failure %s', $this->getConnection()->error));
 		}
 		$this->bindParams($stmt, $updates);
