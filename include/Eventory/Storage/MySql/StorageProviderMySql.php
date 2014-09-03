@@ -102,6 +102,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$changed = false;
 		foreach ($assets as $asset){
 			/** @var EventAsset $asset */
+			if (!$asset instanceof EventAsset){
+				throw new \Exception(sprintf("Invalid Asset %s", print_r($asset, true)));	
+			}
 			if (array_key_exists($asset->key, $existingAssets)){
 				// skip any assets we already have
 				continue;
@@ -165,7 +168,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$event = Event::CreateFromData($result);
 			$events[$event->getId()] = $event;
 		}
-		$this->postEventLoad($events);
+		if (count($events)){
+			$this->postEventLoad($events);
+		}
 		return $events;
 	}
 
@@ -369,6 +374,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	 */
 	protected function postEventLoad($events)
 	{
+echo "Events\n";
+print_r($events);
+
 		if (!is_array($events)){
 			$events = array($events);
 		}
@@ -382,6 +390,10 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$eventIds = array_keys($eventsById);
 
 		// load assets
+echo "Events\n";
+		print_r($events);
+echo "EventsBYIds\n";		
+print_r($eventsById);
 		$assets = $this->fetchResultsByIds('event_assets', $eventIds, 'event_id');
 		foreach ($assets as $row){
 			$eventAsset = EventAsset::CreateFromData($row);
@@ -441,7 +453,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 
 	protected function fetchResultsByIds($table, array $ids, $idCol = null)
 	{
-		if (!$idCol === null){
+		if ($idCol === null){
 			$idCol = 'id';
 		}
 
@@ -449,9 +461,12 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 
 		$sql = sprintf("SELECT * FROM %s WHERE %s IN (%s)", $table, $idCol, $sqlBinds);
 		$stmt = $this->getConnection()->prepare($sql);
+		if ($stmt === false){
+			throw new \Exception(sprintf('db failure [%s] from [%s] with [%s]', $this->getConnection()->error, $sql, print_r($ids,true)));
+		}
 		$this->bindParams($stmt, $ids);
 		if (!$stmt->execute()){
-			throw new \Exception('db failure');
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
 		$res = $stmt->get_result();
 		$results = array();
@@ -469,7 +484,8 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	{
 		$sql = sprintf("SELECT * FROM `%s` WHERE `%s` = ?", $table, $keyCol);
 		$stmt = $this->getConnection()->prepare($sql);
-		$this->bindParams($stmt, $keyVal);
+		
+		$this->bindParams($stmt, array($keyVal));
 		if (!$stmt->execute()){
 			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}

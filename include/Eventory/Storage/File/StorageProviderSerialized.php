@@ -3,6 +3,7 @@
 namespace Eventory\Storage\File;
 
 use Eventory\Objects\Event\Event;
+use Eventory\Objects\Event\Assets\EventAsset;
 use Eventory\Objects\Performers\Performer;
 use Eventory\Storage\iStorageProvider;
 use Eventory\Storage\StorageProviderAbstract;
@@ -327,8 +328,14 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 			/** @var Event $event */
 			if (!$event instanceof Event){
 			    unset($this->events[$k]);
-			error_log("invalid event [". $k ."] [". print_r($event, true));
+			    error_log("invalid event [". $k ."] [". print_r($event, true));
 			    continue;
+			}
+			foreach ($event->assets as $ak => $asset){
+				if (!$asset instanceof EventAsset){
+					//error_log("invalid event asset [". $ak ."] [". print_r($asset, true));
+					unset($event->assets[$ak]);
+				}
 			}
 
 			$this->keyToIdxMap[$event->getKey()] = $event->getId();
