@@ -507,10 +507,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$idCol = 'id';
 		}
 		$sql = sprintf("UPDATE %s SET ", $table);
-		foreach ($updates as $k => $v){
-			$sql .= sprintf('`%s` = ?', $k);
-		}
-	    $updates['id'] = $idVal;
+		$sqlUpdates = array_map(function ($k){ return sprintf('`%s` = ?', $k); }, array_keys($updates));
+		$sql .= join(',', $sqlUpdates);
+	    $updates[$idCol] = $idVal;
 		$sql .= sprintf('WHERE `%s` = ?', $idCol);
 		$stmt = $this->getConnection()->prepare($sql);
 		if ($stmt === false){
