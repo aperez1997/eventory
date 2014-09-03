@@ -84,7 +84,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$stmt = $this->getConnection()->prepare($sql);
 		$this->bindParams($stmt, array($event->getId()));
 		if (!$stmt->execute()){
-			throw new \Exception('db failure');
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
 	}
 
@@ -513,6 +513,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	    $updates['id'] = $idVal;
 		$sql .= sprintf('WHERE `%s` = ?', $idCol);
 		$stmt = $this->getConnection()->prepare($sql);
+		if (!$stmt === false){
+            throw new \Exception(sprintf('db failure %s', $this->getConnection()->error));
+		}
 		$this->bindParams($stmt, $updates);
 		return $stmt->execute();
 	}
