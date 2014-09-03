@@ -39,8 +39,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	{
 		$sql = "INSERT INTO events (url, `key`, created) values (?, ?, NOW())";
 		$stmt = $this->getConnection()->prepare($sql);
-		$stmt->bind_param('s', $url);
-		$stmt->bind_param('s', $key);
+		$stmt->bind_param('ss', $url, $key);
 		if (!$stmt->execute()){
 			throw new \Exception('db failure');
 		}
@@ -83,7 +82,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	{
 		$sql = "UPDATE events SET updated = NOW() WHERE id = ?";
 		$stmt = $this->getConnection()->prepare($sql);
-		$this->bindParam($stmt, $event->getId());
+		$this->bindParams($stmt, array($event->getId()));
 		if (!$stmt->execute()){
 			throw new \Exception('db failure');
 		}
@@ -112,13 +111,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$sql = "INSERT INTO event_assets (event_id, `key`, `type`, hostUrl, imageUrl, linkUrl, text)
 					VALUES (?, ?, ?, ?, ?, ?, ?)";
 			$stmt = $this->getConnection()->prepare($sql);
-			$this->bindParam($stmt, $event->getId());
-			$this->bindParam($stmt, $asset->key);
-			$this->bindParam($stmt, $asset->type);
-			$this->bindParam($stmt, $asset->hostUrl);
-			$this->bindParam($stmt, $asset->imageUrl);
-			$this->bindParam($stmt, $asset->linkUrl);
-			$this->bindParam($stmt, $asset->text);
+			$this->bindParams($stmt, array($event->getId(), $asset->key, $asset->type, $asset->hostUrl, $asset->imageUrl, $asset->linkUrl, $asset->text));
 			$stmt->execute();
 		}
 		$event->addAssets($assets);
@@ -145,8 +138,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$changed = true;
 			$sql = "INSERT INTO event_sub_urls (event_id, url) VALUES (?, ?)";
 			$stmt = $this->getConnection()->prepare($sql);
-			$this->bindParam($stmt, $event->getId());
-			$this->bindParam($stmt, $subUrl);
+			$this->bindParams($stmt, array($event->getId(), $subUrl));
 			$stmt->execute();
 		}
 		$event->addSubUrls($subUrls);
@@ -337,8 +329,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 
 		$sql = "INSERT INTO event_performers (event_id, performer_id) VALUES (?,?)";
 		$stmt = $this->getConnection()->prepare($sql);
-		$stmt->bind_param('i', $performer->getId());
-		$stmt->bind_param('i', $event->getId());
+		$stmt->bind_param('ii', $performer->getId(), $event->getId());
 		if (!$stmt->execute()){
 			throw new \Exception('db failure');
 		}
@@ -355,8 +346,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 
 		$sql = "DELETE FROM event_performers WHERE event_id = ? AND performer_id = ?";
 		$stmt = $this->getConnection()->prepare($sql);
-		$stmt->bind_param('i', $performer->getId());
-		$stmt->bind_param('i', $event->getId());
+		$stmt->bind_param('ii', $performer->getId(), $event->getId());
 		if (!$stmt->execute()){
 			throw new \Exception('db failure');
 		}
@@ -454,9 +444,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 
 		$sql = sprintf("SELECT * FROM %s WHERE %s IN (%s)", $table, $idCol, $sqlBinds);
 		$stmt = $this->getConnection()->prepare($sql);
-		foreach ($ids as $id){
-			$stmt->bind_param('i', $id);
-		}
+		$this->bindParams($stmt, $ids);
 		if (!$stmt->execute()){
 			throw new \Exception('db failure');
 		}
@@ -476,7 +464,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	{
 		$sql = sprintf("SELECT * FROM `%s` WHERE `%s` = ?", $table, $keyCol);
 		$stmt = $this->getConnection()->prepare($sql);
-		$this->bindParam($stmt, $keyVal);
+		$this->bindParams($stmt, $keyVal);
 		if (!$stmt->execute()){
 			throw new \Exception('db failure');
 		}
@@ -497,9 +485,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$joinTable, $dataTable, $joinCol, $joinCol, $idCol2, $sqlBinds
 		);
 		$stmt = $this->getConnection()->prepare($sql);
-		foreach ($ids as $id){
-			$stmt->bind_param('i', $id);
-		}
+		$this->bindParams($stmt, $ids);
 		if (!$stmt->execute()){
 			throw new \Exception('db failure');
 		}
@@ -524,12 +510,10 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		foreach ($updates as $k => $v){
 			$sql .= sprintf('`%s` = ?', $k);
 		}
+	    $updates['id'] = $idVal;
 		$sql .= sprintf('WHERE `%s` = ?', $idCol);
 		$stmt = $this->getConnection()->prepare($sql);
-		foreach ($updates as $v){
-			$this->bindParam($stmt, $v);
-		}
-		$stmt->bind_param('i', $idVal);
+		$this->bindParams($stmt, $updates);
 		return $stmt->execute();
 	}
 
@@ -542,17 +526,21 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		// TODO: finish
 	}
 
-	protected function bindParam(\mysqli_stmt $stmt, $value)
+	protected function bindParams(\mysqli_stmt $stmt, array $values)
 	{
-		if (is_string($value)){
-			$stmt->bind_param('s', $v);
-		} else if (is_bool($value)){
-			$val = $value ? 1 : 0;
-			$stmt->bind_param('i', $val);
-		} else if (is_int($value)){
-			$stmt->bind_param('i', $v);
-		} else {
-			throw new \Exception(sprintf('Unsupported value type %s', gettype($value)));
-		}
+	    $bindStr = '';
+	    foreach ($values as $k => $value){
+            if (is_string($value)){
+                $bindStr .= 's';
+            } else if (is_bool($value)){
+                $values[$k] = $value ? 1 : 0;
+                $bindStr .= 'i';
+            } else if (is_int($value)){
+                $bindStr .= 'i';
+            } else {
+                throw new \Exception(sprintf('Unsupported value type %s', gettype($value)));
+            }
+	    }
+	    $stmt->bind_param($bindStr, array_values($values));
 	}
 }
