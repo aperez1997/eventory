@@ -65,7 +65,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			'key' => $event->getKey(),
 			'url' => $event->eventUrl,
 			'description' => $event->getDescription(),
-			// TODO: remove this line
+			// TODO: remove these lines
 			'created' => $event->getCreated(),
 			'updated' => $event->getUpdated()
 		);
@@ -91,6 +91,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	/**
 	 * @param int|Event $eventId
 	 * @param array $assets         Array of EventAsset
+	 * @throws \Exception
 	 */
 	public function addAssetsToEvent($eventId, array $assets)
 	{
@@ -129,6 +130,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	/**
 	 * @param int|Event $eventId
 	 * @param array $subUrls        Array of string
+	 * @throws \Exception
 	 */
 	public function addSubUrlsToEvent($eventId, array $subUrls)
 	{
@@ -374,9 +376,6 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	 */
 	protected function postEventLoad($events)
 	{
-echo "Events\n";
-print_r($events);
-
 		if (!is_array($events)){
 			$events = array($events);
 		}
@@ -390,10 +389,6 @@ print_r($events);
 		$eventIds = array_keys($eventsById);
 
 		// load assets
-echo "Events\n";
-		print_r($events);
-echo "EventsBYIds\n";		
-print_r($eventsById);
 		$assets = $this->fetchResultsByIds('event_assets', $eventIds, 'event_id');
 		foreach ($assets as $row){
 			$eventAsset = EventAsset::CreateFromData($row);
@@ -471,11 +466,7 @@ print_r($eventsById);
 		$res = $stmt->get_result();
 		$results = array();
 		while ($row = $res->fetch_assoc()){
-			if (isset($row[$idCol])){
-				$results[] = $res;
-			} else {
-				$results[] = $res;
-			}
+			$results[] = $row;
 		}
 		return $results;
 	}
@@ -513,11 +504,7 @@ print_r($eventsById);
 		$res = $stmt->get_result();
 		$results = array();
 		while ($row = $res->fetch_assoc()){
-			if (isset($row[$idCol2])){
-				$results[] = $res;
-			} else {
-				$results[] = $res;
-			}
+			$results[] = $row;
 		}
 		return $results;
 	}
