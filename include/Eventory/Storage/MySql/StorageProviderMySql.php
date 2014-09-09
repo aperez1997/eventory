@@ -49,6 +49,20 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		return $event;
 	}
 
+       public function createEventWithId($id, $url, $key)
+        {
+                $sql = "INSERT INTO events (id, url, `key`, created) values (?, ?, ?, NOW())";
+                $stmt = $this->getConnection()->prepare($sql);
+                $stmt->bind_param('iss', $id, $url, $key);
+                if (!$stmt->execute()){
+                        throw new \Exception(sprintf('db failure %s', $stmt->error));
+                }
+
+                $event = Event::CreateNew($url, $key);
+                $event->id = $stmt->insert_id;
+                return $event;
+        }
+
 	/**
 	 * @param array $events		array of Event
 	 */
@@ -341,7 +355,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 
 		$sql = "INSERT INTO event_performers (event_id, performer_id) VALUES (?,?)";
 		$stmt = $this->getConnection()->prepare($sql);
-		$stmt->bind_param('ii', $performer->getId(), $event->getId());
+		$performerId = $performer->getId();
+		$eventId = $event->getId();
+		$stmt->bind_param('ii', $performerId, $eventId);
 		if (!$stmt->execute()){
 			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
@@ -493,10 +509,13 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$sqlBinds = join(', ', array_map(function(){return '?';}, $ids));
 
 		$sql = sprintf(
-			"SELECT b.* FROM %s a LEFT JOIN %s b ON (a.`%s` = b.`%s`) WHERE a.`%s` IN (%s)",
-			$joinTable, $dataTable, $joinCol, $joinCol, $idCol2, $sqlBinds
+			"SELECT a.%s AS %s, b.* FROM %s a LEFT JOIN %s b ON (a.`%s` = b.id) WHERE a.`%s` IN (%s)",
+			$idCol2, $idCol2, $joinTable, $dataTable, $joinCol, $idCol2, $sqlBinds
 		);
 		$stmt = $this->getConnection()->prepare($sql);
+		if ($stmt === false){
+			throw new \Exception(sprintf('db prepare failure [%s] from [%s]', $this->getConnection()->error, $sql));
+		}
 		$this->bindParams($stmt, $ids);
 		if (!$stmt->execute()){
 			throw new \Exception(sprintf('db failure %s', $stmt->error));

@@ -27,7 +27,7 @@ class Performer extends ObjectAbstract
 		$performer = new Performer();
 		foreach ($performer as $k => $v){
 			if (isset($data[$k])){
-				$performer->$k = $data->$k;
+				$performer->$k = $data[$k];
 			}
 		}
 		$performer->convertTinyIntToBool('deleted');

@@ -16,27 +16,45 @@ $dbUser = 'root';
 $dbPass = 'tempDawg1crizal';
 $dbName = 'eventory';
 $storeProviderDB = new StorageProviderMySql($dbHost, $dbUser, $dbPass, $dbName);
+$skipped = 0;
+
+$mysql = new mysqli($dbHost, $dbUser, $dbPass, $dbName);
+foreach (explode(';', "delete from events; alter table events auto_increment = 1; delete from event_assets; delete from event_sub_urls; delete from performers; alter table performers auto_increment = 1; delete from event_performers") as $query){
+	$mysql->query($query);
+}
 
 try {
 
-for ($i = 0; $i < 10000; $i++){
+for ($i = 1; $i < 10000; $i++){
+
 	$event = $storeProviderFile->loadEventById($i);
 	if (!$event instanceof Event){
+		$skipped++;
+		printf("Invalid event %s[%s]\n", $i, gettype($event));
 		continue;
 	}
 
-	$newEvent = $storeProviderDB->createEvent($event->eventUrl, $event->eventKey);
+	$eventKey = $event->eventKey;
+	if (empty($eventKey)){
+		$skipped++;
+		printf("Event with no key %s\n", $i);
+		continue;
+	}
+
+	$newEvent = $storeProviderDB->createEventWithId($i, $event->eventUrl, $eventKey);
 	$newEvent->description = $event->description;
 	$newEvent->setCreated($event->getCreated());
 	$newEvent->setUpdated($event->getUpdated());
 	$storeProviderDB->saveEvents(array($newEvent));
 
-
 	$storeProviderDB->addAssetsToEvent($newEvent, $event->getAssets());
 	$storeProviderDB->addSubUrlsToEvent($newEvent, $event->getSubUrls());
 }
 
+printf("Skipped %s events\n", $skipped);
+
 // performers
+$skippedLinks = 0;
 foreach ($storeProviderFile->loadAllPerformers() as $performer){
 	/** @var Performer $performer*/
 	/** @var Performer $newPerf */
@@ -46,13 +64,19 @@ foreach ($storeProviderFile->loadAllPerformers() as $performer){
     foreach ($performer->getSiteUrls() as $url){
         $newPerf->addSiteUrl($url);
     }
-    $storeProviderDb->savePerformer($newPerf);
+    $storeProviderDB->savePerformer($newPerf);
 
-    foreach ($performer->getEventIds() as $eventId){
-        $storeProviderDb->addPerformerToEvent($newPerf, $eventId);
-    }
+	foreach ($performer->getEventIds() as $eventId){
+		try {
+			$storeProviderDB->addPerformerToEvent($newPerf, $eventId);
+		} catch (Exception $ex){
+			printf("Missing event ? %s:%s %s\n", $newPerf->getId(), $eventId, $ex->getMessage());
+			$skippedLinks++;
+		}
+	}
 }
+printf("Skipped %s links\n", $skippedLinks);
 
 } catch (Exception $ex){
-	printf("Exception (%s) %s\n@ %s", get_class($ex), $ex->getMessage(), $ex->getTraceAsString());
+	printf("Exception (%s) %s\n", get_class($ex), $ex->__toString());
 }

@@ -16,7 +16,7 @@ class ObjectAbstract
 	{
 		foreach ($this as $k => $v){
 			if (isset($data[$k])){
-				$this->$k = $data->$k;
+				$this->$k = $data[$k];
 			}
 		}
 	}
