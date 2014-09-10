@@ -25,6 +25,8 @@ class Event extends ObjectAbstract
 		$event->loadFromData($data);
 		$event->eventKey = $data['key'];
 		$event->eventUrl = $data['url'];
+		$event->convertDateStringToTime('created');
+		$event->convertDateStringToTime('updated');
 		return $event;
 	}
 
@@ -84,7 +86,6 @@ class Event extends ObjectAbstract
 			$assets = array($assets);
 		}
 
-		$this->updated = time();
 		foreach ($assets as $asset){
 			/** @var EventAsset $asset */
 			$this->assets[$asset->key] = $asset;
@@ -102,7 +103,6 @@ class Event extends ObjectAbstract
 			$subUrls = array($subUrls);
 		}
 
-		$this->updated = time();
 		foreach ($subUrls as $subUrl){
 			$this->subUrls[$subUrl] = $subUrl;
 		}
@@ -151,7 +151,7 @@ class Event extends ObjectAbstract
 
 	public function getCreated()
 	{
-		return is_int($this->created) ? $this->created : strtotime($this->created . ' UTC');
+		return $this->created;
 	}
 
 	public function setCreated($created)
@@ -162,7 +162,7 @@ class Event extends ObjectAbstract
 
 	public function getUpdated()
 	{
-		return is_int($this->updated) ? $this->updated : strtotime($this->update . ' UTC');
+		return $this->updated;
 	}
 
 	public function setUpdated($u){

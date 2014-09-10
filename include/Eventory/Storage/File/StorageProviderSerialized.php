@@ -74,6 +74,7 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 	{
 		$event = $this->getEventFromId($eventId);
 		$event->addAssets($assets);
+		$event->setUpdated(time());
 		$this->dirty = true;
 	}
 
@@ -85,6 +86,7 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 	{
 		$event = $this->getEventFromId($eventId);
 		$event->addSubUrls($subUrls);
+		$event->setUpdated(time());
 		$this->dirty = true;
 	}
 

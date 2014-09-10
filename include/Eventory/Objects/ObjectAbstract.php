@@ -11,6 +11,14 @@ class ObjectAbstract
 			$this->$field = $value == 0 ? false : true;
 		}
 	}
+	
+	protected function convertDateStringToTime($field)
+	{
+		$value = $this->$field;
+		if (!is_int($value)){
+			$this->$field = strtotime($value . ' UTC');
+		}
+	}
 
 	protected function loadFromData($data)
 	{
