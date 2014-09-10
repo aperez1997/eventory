@@ -23,6 +23,8 @@ class Event extends ObjectAbstract
 	{
 		$event = new Event();
 		$event->loadFromData($data);
+		$event->eventKey = $data['key'];
+		$event->eventUrl = $data['url'];
 		return $event;
 	}
 
@@ -149,7 +151,7 @@ class Event extends ObjectAbstract
 
 	public function getCreated()
 	{
-		return $this->created;
+		return is_int($this->created) ? $this->created : strtotime($this->created . ' UTC');
 	}
 
 	public function setCreated($created)
@@ -160,7 +162,7 @@ class Event extends ObjectAbstract
 
 	public function getUpdated()
 	{
-		return $this->updated;
+		return is_int($this->updated) ? $this->updated : strtotime($this->update . ' UTC');
 	}
 
 	public function setUpdated($u){
@@ -170,7 +172,7 @@ class Event extends ObjectAbstract
 	public function getSortKey()
 	{
 		$assetFactor = count($this->assets) * 360;
-		return $this->updated + $assetFactor;
+		return $this->getUpdated() + $assetFactor;
 	}
 
         public function getImageEventUrl(){

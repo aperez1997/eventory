@@ -4,8 +4,8 @@ CREATE TABLE `events` (
   `key` VARCHAR(255) NOT NULL,
   `url` varchar(255) DEFAULT NULL,
   `description` text,
-  `updated` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `created` timestamp NOT NULL,
+  `updated` datetime NOT NULL,
+  `created` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

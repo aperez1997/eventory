@@ -37,7 +37,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	 */
 	public function createEvent($url, $key)
 	{
-		$sql = "INSERT INTO events (url, `key`, created) values (?, ?, NOW())";
+		$sql = "INSERT INTO events (url, `key`, updated, created) values (?, ?, NOW(), NOW())";
 		$stmt = $this->getConnection()->prepare($sql);
 		$stmt->bind_param('ss', $url, $key);
 		if (!$stmt->execute()){
@@ -80,8 +80,8 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			'url' => $event->eventUrl,
 			'description' => $event->getDescription(),
 			// TODO: remove these lines
-			'created' => $event->getCreated(),
-			'updated' => $event->getUpdated()
+			'created' => gmdate("Y-m-d H:m:i",$event->getCreated()),
+			'updated' => gmdate("Y-m-d H:m:i",$event->getUpdated())
 		);
 		$rv = $this->updateRecord('events', $event->getId(), $updates);
 		return $rv;
@@ -538,6 +538,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$sql .= join(',', $sqlUpdates);
 		$updates[$idCol] = $idVal;
 		$sql .= sprintf(' WHERE `%s` = ?', $idCol);
+		error_log("SQL[$sql][".json_encode($updates)."]");
 		$stmt = $this->getConnection()->prepare($sql);
 		if ($stmt === false){
         		throw new \Exception(sprintf('db failure %s from %s', $this->getConnection()->error, $sql));

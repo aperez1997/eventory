@@ -25,9 +25,9 @@ foreach (explode(';', "delete from events; alter table events auto_increment = 1
 
 try {
 
-for ($i = 1; $i < 10000; $i++){
-
+for ($i = 1; $i < 10100; $i++){
 	$event = $storeProviderFile->loadEventById($i);
+	print_r($event);
 	if (!$event instanceof Event){
 		$skipped++;
 		printf("Invalid event %s[%s]\n", $i, gettype($event));
@@ -42,13 +42,16 @@ for ($i = 1; $i < 10000; $i++){
 	}
 
 	$newEvent = $storeProviderDB->createEventWithId($i, $event->eventUrl, $eventKey);
-	$newEvent->description = $event->description;
-	$newEvent->setCreated($event->getCreated());
-	$newEvent->setUpdated($event->getUpdated());
-	$storeProviderDB->saveEvents(array($newEvent));
 
 	$storeProviderDB->addAssetsToEvent($newEvent, $event->getAssets());
 	$storeProviderDB->addSubUrlsToEvent($newEvent, $event->getSubUrls());
+
+	// save last to get correct updated
+	$newEvent->description = $event->description;
+        $newEvent->setCreated($event->getCreated());
+        $newEvent->setUpdated($event->getUpdated());
+	$storeProviderDB->saveEvents(array($newEvent));
+	die();
 }
 
 printf("Skipped %s events\n", $skipped);
