@@ -7,7 +7,7 @@ use Eventory\Objects\Performers\Performer;
 use Eventory\Site\Constants\SitePageParams;
 use Eventory\Site\SitePageBase;
 
-class SiteAdminEventPerformerAdd extends SitePageBase
+class SiteAdminEventPerformerAdd extends SitePageAdmin
 {
 	/**
 	 * @param array $params
@@ -58,13 +58,5 @@ class SiteAdminEventPerformerAdd extends SitePageBase
 		$content = $this->renderContent($this->getTemplatesPath() . 'tmp_event_performer_add.php', $event);
 
 		return $this->renderMain($content, 'Eventory Admin: add performer');
-	}
-
-	protected function loadEvent($params, &$eventId = null)
-	{
-		$eventId = $params[SitePageParams::EVENT_ID];
-		$events = $this->store->loadEventsById(array($eventId));
-		$event = reset(array_values($events));
-		return $event;
 	}
 } 

@@ -51,7 +51,7 @@ abstract class StorageProviderAbstract implements iStorageProvider
 		}
 		$event = $this->loadEventById($eventId);
 		if (!$event instanceof Event){
-			throw new \Exception(sprintf('Invalid Event id [%s]', $eventId));
+			throw new StorageException(sprintf('Invalid Event id [%s]', $eventId));
 		}
 		return $event;
 	}
@@ -68,7 +68,7 @@ abstract class StorageProviderAbstract implements iStorageProvider
 		}
 		$performer = $this->loadPerformerById($performerId);
 		if (!$performer instanceof Performer){
-			throw new \Exception(sprintf('Invalid performer id [%s]', $performerId));
+			throw new StorageException(sprintf('Invalid performer id [%s]', $performerId));
 		}
 		return $performer;
 	}

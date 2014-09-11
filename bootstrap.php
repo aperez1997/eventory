@@ -13,3 +13,4 @@ $splClassLoader = new SplClassLoader('Eventory', $eventoryIncludePath);
 $splClassLoader->register();
 
 require_once $vendorPath . '/simple_html_dom.php';
+require_once $vendorPath . '/zaphpa/zaphpa.lib.php';
