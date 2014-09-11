@@ -258,6 +258,27 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		return $performer;
 	}
 
+
+        public function createPerformerWithId($id, $name)
+        {
+		$lookup = $this->loadPerformerByName($name);
+                if ($lookup instanceof Performer){
+                        return $lookup;
+                }
+ 
+		$sql = "INSERT INTO performers (id, name, created) values (?, ?, NOW())";
+                $stmt = $this->getConnection()->prepare($sql);
+                $stmt->bind_param('is', $id, $name);
+                if (!$stmt->execute()){
+                        throw new \Exception(sprintf('db failure %s', $stmt->error));
+                }
+
+                $performer = Performer::CreateNew($name);
+                $performer->id = $id;
+                return $performer;
+        }
+
+
 	/**
 	 * @param array $ids
 	 * @return array Performer
@@ -304,7 +325,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$res = $stmt->get_result();
 		$performers = array();
 		while ($row = $res->fetch_assoc()){
-			$performers[] = Performer::CreateFromData($row);
+			$performers[$row['id']] = Performer::CreateFromData($row);
 		}
 		$this->postPerformerLoad($performers);
 		return $performers;
@@ -357,7 +378,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$stmt = $this->getConnection()->prepare($sql);
 		$performerId = $performer->getId();
 		$eventId = $event->getId();
-		$stmt->bind_param('ii', $performerId, $eventId);
+		$stmt->bind_param('ii', $eventId, $performerId);
 		if (!$stmt->execute()){
 			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
@@ -394,6 +415,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	{
 		if (!is_array($events)){
 			$events = array($events);
+		}
+		if (empty($events)){
+			return;
 		}
 
 		$eventsById = array();
@@ -436,6 +460,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	{
 		if (!is_array($performers)){
 			$performers = array($performers);
+		}
+		if (empty($performers)){
+			return;
 		}
 
 		$performersById = ArrayUtils::ReindexByMethod($performers, 'getId');
@@ -538,7 +565,6 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$sql .= join(',', $sqlUpdates);
 		$updates[$idCol] = $idVal;
 		$sql .= sprintf(' WHERE `%s` = ?', $idCol);
-		error_log("SQL[$sql][".json_encode($updates)."]");
 		$stmt = $this->getConnection()->prepare($sql);
 		if ($stmt === false){
         		throw new \Exception(sprintf('db failure %s from %s', $this->getConnection()->error, $sql));

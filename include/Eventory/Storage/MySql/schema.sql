@@ -37,8 +37,8 @@ CREATE TABLE `performers` (
 	`highlight` TINYINT(1) NOT NULL DEFAULT 0,
 	`deleted` TINYINT(1) NOT NULL DEFAULT 0,
 	`site_urls` TEXT DEFAULT NULL,
-	`updated` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	`created` TIMESTAMP NOT NULL,
+	`updated` TIMESTAMP,
+	`created` DATETIME NOT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

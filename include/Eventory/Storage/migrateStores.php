@@ -13,7 +13,7 @@ $storeProviderFile = new StorageProviderSerialized($fileName);
 
 $dbHost = 'localhost';
 $dbUser = 'root';
-$dbPass = 'tempDawg1crizal';
+$dbPass = trim(file_get_contents(__DIR__ . "/foo.txt"));
 $dbName = 'eventory';
 $storeProviderDB = new StorageProviderMySql($dbHost, $dbUser, $dbPass, $dbName);
 $skipped = 0;
@@ -25,9 +25,8 @@ foreach (explode(';', "delete from events; alter table events auto_increment = 1
 
 try {
 
-for ($i = 1; $i < 10100; $i++){
+for ($i = 1; $i < 10030; $i++){
 	$event = $storeProviderFile->loadEventById($i);
-	print_r($event);
 	if (!$event instanceof Event){
 		$skipped++;
 		printf("Invalid event %s[%s]\n", $i, gettype($event));
@@ -51,7 +50,6 @@ for ($i = 1; $i < 10100; $i++){
         $newEvent->setCreated($event->getCreated());
         $newEvent->setUpdated($event->getUpdated());
 	$storeProviderDB->saveEvents(array($newEvent));
-	die();
 }
 
 printf("Skipped %s events\n", $skipped);
@@ -61,13 +59,21 @@ $skippedLinks = 0;
 foreach ($storeProviderFile->loadAllPerformers() as $performer){
 	/** @var Performer $performer*/
 	/** @var Performer $newPerf */
-	$newPerf = $storeProviderDB->createPerformer($performer->getName());
-    $newPerf->setImageUrl($performer->getImageUrl());
-    $newPerf->setHighlight($performer->isHighlighted());
-    foreach ($performer->getSiteUrls() as $url){
-        $newPerf->addSiteUrl($url);
-    }
-    $storeProviderDB->savePerformer($newPerf);
+	$newPerf = $storeProviderDB->createPerformerWithId($performer->getId(), $performer->getName());
+	if (!$newPerf->getImageUrl()){
+		$newPerf->setImageUrl($performer->getImageUrl());
+	}
+    	if ($performer->isHighlighted()){
+		$newPerf->setHighlight($performer->isHighlighted());
+	}
+	foreach ($performer->getSiteUrls() as $url){
+		$newPerf->addSiteUrl($url);
+	}
+	$storeProviderDB->savePerformer($newPerf);
+
+	if (count($performer->getEventIds()) <= 0){
+		printf("Performer has no events %s %s\n", $performer->getId(), $performer->getName());
+	}
 
 	foreach ($performer->getEventIds() as $eventId){
 		try {
