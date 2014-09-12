@@ -1,4 +1,4 @@
-<script src="event_table.js"></script>
+<script src="/js/event_table.js"></script>
 <table class='events'>
 <?php
 

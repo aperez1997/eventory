@@ -48,6 +48,8 @@ echo "
 	{$urlContent}
 	{$performerContent}";
 ?>
+<script src="/js/admin.js"></script>
+<div ng-app="adminApp" ng-controller="eventPerformerCtr">
 <form xmlns="http://www.w3.org/1999/html" method="POST">
 <input type="hidden" name="<?php echo SitePageParams::EVENT_ID?>" value="<?php echo $eventId?>"?>
 <input type="hidden" name="<?php echo SitePageParams::PAGE?>" value="<?php echo SitePageType::EVENT_PERFORMER_ADD?>"?>
@@ -64,7 +66,7 @@ echo "
 					continue;
 				}
 				$name = $performer->getName();
-				echo "<option value='{$id}'>{$name}</option>\n";
+				echo "<option value='{$id}'>{$name}</option> <div ng-click='removePerformer({$eventId}, {$id});'>X</div>\n";
 			}
 		?>
 	</select>
@@ -77,4 +79,5 @@ echo "
 </div>
 	<input type="submit"/><input type="submit" value="Cancel" onclick="document.back();">
 </form>
+</div>
 
