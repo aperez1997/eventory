@@ -17,8 +17,8 @@ class SiteApiAdmin
 	public function __construct(iStorageProvider $provider){
 		$this->store = $provider;
 	}
-	
-	public function removeEventPerformer(\Zaphpa_Request $req, \Zaphpa_Response$res)
+
+	public function removeEventPerformer(\Zaphpa_Request $req, \Zaphpa_Response $res)
 	{
 		$eventId = $req->params['event_id'];
 		$event = $this->store->loadEventById($eventId);
@@ -36,7 +36,18 @@ class SiteApiAdmin
 		
 		$this->send($res, 200);
 	}
-	
+
+	public function deletePerformer(\Zaphpa_Request $req, \Zaphpa_Response $res)
+    {
+        $perf = $this->store->loadPerformerById($req->params['performer_id']);
+        if (!$perf instanceof Performer){
+            $this->sendError($res, 'performer not found', 400);
+        }
+        $this->store->deletePerformer($perf->getId());
+
+        $this->send($res, 200);
+    }
+
 		
 	protected function sendError(\Zaphpa_Response $res, $error, $code = null)
 	{

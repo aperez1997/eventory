@@ -51,6 +51,14 @@ class SiteApiProcessor
 				),
 				'post' => array($this->adminApi, 'removeEventPerformer'),
 			));
+			$router->addRoute(array(
+                'path' => '/admin/performer/{performer_id}/delete',
+                'handlers' => array(
+                    'event_id' => \Zaphpa_Constants::PATTERN_DIGIT,
+                    'performer_id' => \Zaphpa_Constants::PATTERN_DIGIT,
+                ),
+                'post' => array($this->adminApi, 'deletePerformer'),
+            ));
 			$this->router = $router;
 		}
 		return $this->router;

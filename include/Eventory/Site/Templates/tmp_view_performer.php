@@ -1,3 +1,5 @@
+<script src="/js/admin.js"></script>
+<div ng-app="adminApp" ng-controller="eventPerformerCtr">
 <?php
 
 use Eventory\Objects\Performers\Performer;
@@ -26,6 +28,8 @@ foreach ($urls as $url){
 	echo "<li><a href='{$url}' target='_blank'>{$url}</a></li>\n";
 }
 
+echo "<a ng-click-confirm='deletePerformer({$id});'>Delete</a>
+
 $eventIds = $performer->getEventIds();
 if (!empty($eventIds)){
 	$events = $page->getStorageProvider()->loadEventsById($eventIds);
@@ -36,3 +40,5 @@ if (!empty($eventIds)){
 } else {
 	echo "No events<br>";
 }
+?>
+</div>
