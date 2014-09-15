@@ -374,7 +374,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			return;
 		}
 
-		$sql = "INSERT INTO event_performers (event_id, performer_id) VALUES (?,?)";
+		$sql = "INSERT IGNORE INTO event_performers (event_id, performer_id) VALUES (?,?)";
 		$stmt = $this->getConnection()->prepare($sql);
 		$performerId = $performer->getId();
 		$eventId = $event->getId();
