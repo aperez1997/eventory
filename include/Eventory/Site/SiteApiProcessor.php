@@ -6,7 +6,7 @@
 
 namespace Eventory\Site;
 
-use Eventory\SiteAdmin\SiteApiAdmin;
+use Eventory\Site\Admin\SiteApiAdmin;
 use Eventory\Storage\iStorageProvider;
 
 class SiteApiProcessor 
@@ -24,7 +24,10 @@ class SiteApiProcessor
 	{
 		$router = $this->getRouter();	
 		try {
-			$router->route($_REQUEST['path']);
+			$path = $_REQUEST['path'];
+			if ($path[0] != '/'){ $path = '/' . $path; }
+			error_log("Path  " . $path);
+			$router->route($path);
 		} catch (\Zaphpa_InvalidPathException $ex) {      
 			header("Content-Type: application/json;", TRUE, 404);
 			$out = array("error" => "api not found");        
@@ -41,11 +44,11 @@ class SiteApiProcessor
 		if (!isset($this->router)){
 			$router = new \Zaphpa_Router();
 			$router->addRoute(array(
-				'path' => 'admin/event/{event_id}/performer/{performer_id}/remove',
+				'path' => '/admin/event/{event_id}/performer/{performer_id}/remove',
 				'handlers' => array(
-			        'event_id' => \Zaphpa_Constants::PATTERN_DIGIT,
+					'event_id' => \Zaphpa_Constants::PATTERN_DIGIT,
 					'performer_id' => \Zaphpa_Constants::PATTERN_DIGIT,
-			    ),
+				),
 				'post' => array($this->adminApi, 'removeEventPerformer'),
 			));
 			$this->router = $router;

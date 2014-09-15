@@ -4,7 +4,7 @@
  * @copyright Copyright (c) 2007-2014 Zoosk Inc.
  */
 
-namespace Eventory\SiteAdmin;
+namespace Eventory\Site\Admin;
 
 use Eventory\Objects\Event\Event;
 use Eventory\Objects\Performers\Performer;
@@ -23,7 +23,7 @@ class SiteApiAdmin
 		$eventId = $req->params['event_id'];
 		$event = $this->store->loadEventById($eventId);
 		if (!$event instanceof Event){
-			$this->sendError($res, 'event not found', 400);
+			$this->sendError($res, 'event not found ' . $eventId, 400);
 			return;
 		}
 		

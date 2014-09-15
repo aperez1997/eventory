@@ -395,7 +395,9 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 
 		$sql = "DELETE FROM event_performers WHERE event_id = ? AND performer_id = ?";
 		$stmt = $this->getConnection()->prepare($sql);
-		$stmt->bind_param('ii', $performer->getId(), $event->getId());
+		$eventId = $event->getId();
+		$pId = $performer->getId();
+		$stmt->bind_param('ii', $eventId, $pId);
 		if (!$stmt->execute()){
 			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}

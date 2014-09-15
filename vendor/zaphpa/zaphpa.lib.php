@@ -65,7 +65,7 @@ class Zaphpa_Callback_Util {
       $method = new ReflectionMethod($originalClass, array_shift($callback));
       
       if ($method->isPublic()) {
-        if ($method->isStatic()) {
+        if ($method->isStatic() || is_object($originalClass)) {
           $callback = array($originalClass, $method->name);
         } else {
           $callback = array(new $originalClass, $method->name);

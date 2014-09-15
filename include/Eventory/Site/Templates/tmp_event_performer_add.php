@@ -1,3 +1,5 @@
+<script src="/js/admin.js"></script>
+<div ng-app="adminApp" ng-controller="eventPerformerCtr">
 <?php
 
 use Eventory\Objects\Event\Event;
@@ -8,16 +10,21 @@ use Eventory\Utils\ArrayUtils;
 
 /** @var Event $event */
 $event = $vars;
-
 if (!$event instanceof Event){
 	printf("Event not found!");
 	return;
 }
+$eventId = $event->getId();
+$eventKey = $event->getKey();
+$description = $event->description;
 
 $performerContent = '';
 foreach ($event->getPerformerIds() as $pId => $pName){
         $href = $page->getLinkPerformerView($pId);
-        $performerContent .= "<li><a href='{$href}' target='_blank'>{$pName}</a></li>\n";
+        $performerContent .= "
+<li><a href='{$href}' target='_blank'>{$pName}</a>
+  <span class='clickable' ng-click='removePerformer({$eventId}, {$pId});'>X</span>
+</li>\n";
 }
 
 $existingIds = array_keys($event->getPerformerIds());
@@ -26,9 +33,6 @@ $performers = $page->getStorageProvider()->loadAllPerformers();
 $performers = ArrayUtils::ReindexByMethod($performers, 'getName');
 ksort($performers);
 
-$eventId = $event->getId();
-$eventKey = $event->getKey();
-$description = $event->description;
 $f = $page->getTimeFormat();
 $created = date($f, $event->getCreated());
 $updated = date($f, $event->getUpdated());
@@ -44,12 +48,8 @@ echo "
 	<h1>{$eventKey}</h1>
 	<div>[#{$event->getId()}] Created: {$created}, Updated: {$updated}</div>
 	<p>{$description}</p>
-	{$assetContent}
-	{$urlContent}
 	{$performerContent}";
 ?>
-<script src="/js/admin.js"></script>
-<div ng-app="adminApp" ng-controller="eventPerformerCtr">
 <form xmlns="http://www.w3.org/1999/html" method="POST">
 <input type="hidden" name="<?php echo SitePageParams::EVENT_ID?>" value="<?php echo $eventId?>"?>
 <input type="hidden" name="<?php echo SitePageParams::PAGE?>" value="<?php echo SitePageType::EVENT_PERFORMER_ADD?>"?>
@@ -66,7 +66,7 @@ echo "
 					continue;
 				}
 				$name = $performer->getName();
-				echo "<option value='{$id}'>{$name}</option> <div ng-click='removePerformer({$eventId}, {$id});'>X</div>\n";
+				echo "<option value='{$id}'>{$name}</option>\n";
 			}
 		?>
 	</select>
