@@ -50,7 +50,7 @@ echo "
 	<p>{$description}</p>
 	{$performerContent}";
 ?>
-<form xmlns="http://www.w3.org/1999/html" method="POST">
+<form xmlns="http://www.w3.org/1999/html" method="POST" action="?<?php echo SitePageParams::PAGE?>=<?php echo SitePageType::EVENT_PERFORMER_ADD?>&<?php echo SitePageParams::EVENT_ID?>=<?php echo $eventId?>">
 <input type="hidden" name="<?php echo SitePageParams::EVENT_ID?>" value="<?php echo $eventId?>"?>
 <input type="hidden" name="<?php echo SitePageParams::PAGE?>" value="<?php echo SitePageType::EVENT_PERFORMER_ADD?>"?>
 <div>
