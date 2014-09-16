@@ -39,7 +39,14 @@ if ($urlContent){
 $performerContent = '';
 foreach ($event->getPerformerIds() as $pId => $pName){
 	$href = $page->getLinkPerformerView($pId);
-	$performerContent .= "<li><a href='{$href}' target='_blank'>{$pName}</a></li>\n";
+	$bId = 'button-' . join('-', array($eventId, $pId));
+	$performerContent .= "
+<li><a href='{$href}' target='_blank'>{$pName}</a> 
+<button data-clipboard-text='{$pName}' class='copy' id='{$bId}'>Copy</button>
+<script>
+var client = new ZeroClipboard($('#{$bId}'));
+</script>
+</li>\n";
 }
 
 $linkPerformerAdd = '';
@@ -54,13 +61,20 @@ if ($performerContent){
 	$performerContent = $linkPerformerAdd;
 }
 
-$outerClass = 'regular';
 if (count($event->getAssets()) == 1){
-	$outerClass = 'mono';
-}
-
-$output = "
-<div class='{$outerClass}'>
+echo "<div class='mono'>
+  <div class='left'>
+    <h2 class='key'>{$eventKey}</h2>
+    <div class='info'>[#{$event->getId()}] Created: {$created}, Updated: {$updated}</div>
+    <div class='description'><p>{$description}</p></div>
+    {$urlContent}
+    {$performerContent}
+  </div>
+  {$assetContent}
+  </div>";
+} else {
+  echo "
+<div class='regular'>
 <h2 class='key'>{$eventKey}</h2>
 <div class='info'>[#{$event->getId()}] Created: {$created}, Updated: {$updated}</div>
 <div class='description'><p>{$description}</p></div>
@@ -69,4 +83,4 @@ $output = "
 {$performerContent}
 </div>
 \n";
-echo $output;
+}

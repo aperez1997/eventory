@@ -26,7 +26,6 @@ class SiteApiProcessor
 		try {
 			$path = $_REQUEST['path'];
 			if ($path[0] != '/'){ $path = '/' . $path; }
-			error_log("Path  " . $path);
 			$router->route($path);
 		} catch (\Zaphpa_InvalidPathException $ex) {      
 			header("Content-Type: application/json;", TRUE, 404);
@@ -35,6 +34,7 @@ class SiteApiProcessor
 		} catch (\Exception $ex){
 			header("Content-Type: application/json;", TRUE, 500);
 			$out = array("error" => sprintf("Server error %s", $ex->getMessage()));
+			error_log(sprintf("Exception (%s) %s\n", get_class($ex), $ex->__toString()));
 			die(json_encode($out));			
 		}
 	}

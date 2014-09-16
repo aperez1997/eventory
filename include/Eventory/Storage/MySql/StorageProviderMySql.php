@@ -337,7 +337,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 	 */
 	public function deletePerformer($id)
 	{
-		$this->updateRecord('performer', $id, array('deleted', 1));
+		$this->updateRecord('performers', $id, array('deleted' => 1));
 	}
 
 	/**
