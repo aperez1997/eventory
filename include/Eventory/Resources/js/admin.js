@@ -8,16 +8,35 @@ function eventPerformerController($scope, $http, $window){
 
   $scope.removePerformer = function(eventId, performerId){
     var path = "admin/event/"+ eventId +"/performer/"+ performerId + "/remove";
-    $http.post("api.php?path="+path)
+    $http.post("api.php?path="+path, null)
 	.success(reload)
 	.error(error);
   };
 
   $scope.deletePerformer = function(pId){
     var path = "admin/performer/"+ pId + "/delete";
-    $http.post("api.php?path="+path)
+    $http.post("api.php?path="+path, null)
         .success(reload)
         .error(error);
+  };
+  
+  $scope.markDuplicate = function(){
+    var dupeId = $scope['performer-id-dupe'];
+    if (!(dupeId > 0)){
+      alert('invalid dupe performer');   
+      return;
+    }
+    var realId = $scope['performer-id-real'];
+    if (!(realId > 0)){
+      alert('invalid real performer');   
+      return;
+    }
+    var path = "admin/performer/"+ dupeId + "/duplicate/" + realId;
+    alert(path);
+    return;
+    $http.post("api.php?path="+path, null)
+      .success(reload)
+      .error(error);
   }
 }
 

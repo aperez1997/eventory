@@ -6,6 +6,7 @@
 
 namespace Eventory\Site\Admin;
 
+use Eventory\Model\EventModel;
 use Eventory\Objects\Event\Event;
 use Eventory\Objects\Performers\Performer;
 use Eventory\Storage\iStorageProvider;
@@ -13,9 +14,12 @@ use Eventory\Storage\iStorageProvider;
 class SiteApiAdmin 
 {
 	protected $store;
+	protected $model;
 	
-	public function __construct(iStorageProvider $provider){
+	public function __construct(iStorageProvider $provider, EventModel $model)
+	{
 		$this->store = $provider;
+		$this->model = $model;
 	}
 
 	public function removeEventPerformer(\Zaphpa_Request $req, \Zaphpa_Response $res)
@@ -48,6 +52,19 @@ class SiteApiAdmin
 		$this->send($res, 200);
 	}
 
+	public function markDuplicate(\Zaphpa_Request $req, \Zaphpa_Response $res)
+	{
+		$perfDupe = $this->store->loadPerformerById($req->params['performer_id_dupe']);
+		if (!$perfDupe instanceof Performer){
+			$this->sendError($res, 'performer not found', 400);
+        }
+		$perfReal = $this->store->loadPerformerById($req->params['performer_id_real']);
+		if (!$perfReal instanceof Performer){
+			$this->sendError($res, 'performer not found', 400);
+        }
+		
+		$this->model->markPerformerDuplicate($perfDupe, $perfReal);
+	}
 		
 	protected function sendError(\Zaphpa_Response $res, $error, $code = null)
 	{

@@ -6,6 +6,7 @@
 
 namespace Eventory\Site;
 
+use Eventory\Model\EventModel;
 use Eventory\Site\Admin\SiteApiAdmin;
 use Eventory\Storage\iStorageProvider;
 
@@ -17,7 +18,8 @@ class SiteApiProcessor
 	
 	public function __construct(iStorageProvider $store){
 		$this->store = $store;
-		$this->adminApi = new SiteApiAdmin($store);
+		$model = new EventModel($this->store);
+		$this->adminApi = new SiteApiAdmin($store, $model);
 	}
 	
 	public function handle()
@@ -54,10 +56,17 @@ class SiteApiProcessor
 			$router->addRoute(array(
                 'path' => '/admin/performer/{performer_id}/delete',
                 'handlers' => array(
-                    'event_id' => \Zaphpa_Constants::PATTERN_DIGIT,
                     'performer_id' => \Zaphpa_Constants::PATTERN_DIGIT,
                 ),
                 'post' => array($this->adminApi, 'deletePerformer'),
+            ));
+			$router->addRoute(array(
+                'path' => '/admin/performer/{performer_id_dupe}/duplicate/{performer_id_real}',
+                'handlers' => array(
+                    'performer_id_dupe' => \Zaphpa_Constants::PATTERN_DIGIT,
+	                'performer_id_real' => \Zaphpa_Constants::PATTERN_DIGIT,
+                ),
+                'post' => array($this->adminApi, 'markDuplicate'),
             ));
 			$this->router = $router;
 		}

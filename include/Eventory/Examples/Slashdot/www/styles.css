@@ -102,6 +102,10 @@ li.thumb img {
 	position: absolute; top: 100px; right: 50px;
 }
 
+div.performer-duplicate-box {
+   margin: 5px; 
+}
+
 strong {
     font-size: 1.5em;
     margin-bottom: 5px;
