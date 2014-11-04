@@ -28,7 +28,7 @@ foreach ($urls as $url){
 	echo "<li><a href='{$url}' target='_blank'>{$url}</a></li>\n";
 }
 
-echo "<a ng-click-confirm='deletePerformer({$id});'>Delete</a>
+echo "<a href='#' ng-confirm-click='Are you sure?' ng-click='deletePerformer({$id});' class='delete-performer'>Delete</a>";
 
 $eventIds = $performer->getEventIds();
 if (!empty($eventIds)){
