@@ -13,6 +13,7 @@ class SitePageType
 	const EVENT_EDIT			= 'ee';
 	const EVENT_PERFORMER_ADD	= 'epa';
 	const BROWSE_PERFORMERS		= 'bp';
+	const BROWSE_PERFORMERS_NEW	= 'bpn';
 	const PERFORMER				= 'p';
 	const PERFORMER_EDIT		= 'pe';
 }

@@ -9,9 +9,10 @@ namespace Eventory\Site\Admin;
 use Eventory\Model\EventModel;
 use Eventory\Objects\Event\Event;
 use Eventory\Objects\Performers\Performer;
+use Eventory\Site\Api\SiteApiAbstract;
 use Eventory\Storage\iStorageProvider;
 
-class SiteApiAdmin 
+class SiteApiAdmin extends SiteApiAbstract
 {
 	protected $store;
 	protected $model;
@@ -64,22 +65,5 @@ class SiteApiAdmin
         }
 		
 		$this->model->markPerformerDuplicate($perfDupe, $perfReal);
-	}
-		
-	protected function sendError(\Zaphpa_Response $res, $error, $code = null)
-	{
-		if (!isset($code)){
-			$code = 500;
-		}
-		$res->add(json_encode(array("error" => $error)));
-		$res->send($code, 'json');
-	}
-	
-	protected function send(\Zaphpa_Response $res, $code, $body = null)
-	{
-		if ($body){
-			$res->add($body);
-		}
-		$res->send($code, 'json');
 	}
 }

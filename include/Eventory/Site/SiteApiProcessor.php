@@ -7,7 +7,9 @@
 namespace Eventory\Site;
 
 use Eventory\Model\EventModel;
+use Eventory\Model\PerformerModel;
 use Eventory\Site\Admin\SiteApiAdmin;
+use Eventory\Site\Api\SiteApiView;
 use Eventory\Storage\iStorageProvider;
 
 class SiteApiProcessor 
@@ -15,11 +17,14 @@ class SiteApiProcessor
 	protected $store;
 	protected $router;
 	protected $adminApi;
+	protected $viewApi;
 	
 	public function __construct(iStorageProvider $store){
 		$this->store = $store;
 		$model = new EventModel($this->store);
 		$this->adminApi = new SiteApiAdmin($store, $model);
+		$performerModel = new PerformerModel($this->store);
+		$this->viewApi = new SiteApiView($performerModel);
 	}
 	
 	public function handle()
@@ -45,6 +50,10 @@ class SiteApiProcessor
 	{
 		if (!isset($this->router)){
 			$router = new \Zaphpa_Router();
+			$router->addRoute(array(
+                'path' => '/performer/browse',
+                'get' => array($this->viewApi, 'browsePerformers'),
+            ));
 			$router->addRoute(array(
 				'path' => '/admin/event/{event_id}/performer/{performer_id}/remove',
 				'handlers' => array(

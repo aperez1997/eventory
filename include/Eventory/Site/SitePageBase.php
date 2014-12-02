@@ -8,6 +8,7 @@ namespace Eventory\Site;
 
 
 use Eventory\Model\EventModel;
+use Eventory\Model\PerformerModel;
 use Eventory\Site\Browse\SiteBrowsePerformers;
 use Eventory\Site\Constants\SitePageParams;
 use Eventory\Site\Constants\SitePageType;
@@ -19,6 +20,8 @@ abstract class SitePageBase
 	protected $store;
 	/** @var EventModel  */
 	protected $eventModel;
+	/** @var PerformerModel */
+	protected $performerModel;
 	protected $postResult = null;
 	protected $postResultMsg;
 
@@ -27,6 +30,7 @@ abstract class SitePageBase
 		$this->store = $store;
 		 // TODO: move this into a constructor dependency
 		$this->eventModel = new EventModel($store);
+		$this->performerModel = new PerformerModel($store);
 	}
 
 	public function getStorageProvider()

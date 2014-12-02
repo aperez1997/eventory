@@ -7,6 +7,7 @@ namespace Eventory\Site;
 
 use Eventory\Site\Admin\SiteAdminEventPerformerAdd;
 use Eventory\Site\Browse\SiteBrowsePerformers;
+use Eventory\Site\Browse\SiteBrowsePerformersNew;
 use Eventory\Site\Browse\SiteBrowseRecentEvents;
 use Eventory\Site\Constants\SitePageParams;
 use Eventory\Site\Constants\SitePageType;
@@ -30,6 +31,9 @@ class SitePageIndex extends SitePageBase
 				break;
 			case SitePageType::BROWSE_PERFORMERS:
 				$pageObject = new SiteBrowsePerformers($this->store);
+				break;
+			case SitePageType::BROWSE_PERFORMERS_NEW:
+				$pageObject = new SiteBrowsePerformersNew($this->store);
 				break;
 			case SitePageType::EVENT_PERFORMER_ADD:
 				$pageObject = new SiteAdminEventPerformerAdd($this->store);
