@@ -234,6 +234,38 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		$this->postEventLoad($events);
 		return $events;
 	}
+	
+	/**
+	 * @param int $updated
+	 * @param int|null $maxCount
+	 * @param bool|null $older - defaults to false
+	 * @return Event[]
+	 * @throws
+	 */
+	public function loadEventsByUpdated($updated, $maxCount = null, $older = null)
+	{
+		$limitSQL = '';
+		if ($maxCount){
+			$limitSQL = sprintf(' LIMIT %d', intval($maxCount));
+		}
+		if ($older == null){
+			$older = false;		
+		}
+		$operator = $older ? '<=' : '>=';
+		$sql = sprintf("SELECT * FROM events WHERE updated %s ? ORDER BY updated DESC %s", $operator, $limitSQL);
+		$stmt = $this->getConnection()->prepare($sql);
+		$this->bindParams($stmt, array(intval($updated)));
+		if (!$stmt->execute()){
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
+		}
+		$res = $stmt->get_result();
+		$events = array();
+		while ($row = $res->fetch_assoc()){
+			$events[] = Event::CreateFromData($row);
+		}
+		$this->postEventLoad($events);
+		return $events;
+	}
 
 	/**
 	 * @param string $name

@@ -129,7 +129,7 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 	/**
 	 * @param int|null $maxCount
 	 * @param int|null $offset
-	 * @return array Event
+	 * @return Event[]
 	 */
 	public function loadRecentEvents($maxCount = null, $offset = null)
 	{
@@ -154,6 +154,29 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 		$events = array_reverse($events);
 		$events = array_slice($events, $offset, $maxCount);
 		return $events;
+	}
+	
+	public function loadEventsByUpdated($updated, $maxCount = null, $older = null)
+	{
+		if ($older == null){
+			$older = false;
+		}
+		
+		$returnEvents = array();
+		$events = $this->loadRecentEvents();
+		if ($older){
+			$events = array_reverse($events);
+		}
+		
+		foreach ($events as $event){
+			if (($older && $event->getUpdated() <= $updated) || (!$older && $event->getUpdated() >= $updated)){
+				$returnEvents[] = $event;
+			}
+			if ($maxCount && count($returnEvents) >= $maxCount){
+				//break;
+			}
+		}
+		return $returnEvents;
 	}
 
 	/**

@@ -6,6 +6,7 @@
 namespace Eventory\Site;
 
 use Eventory\Site\Admin\SiteAdminEventPerformerAdd;
+use Eventory\Site\Browse\SiteBrowseEventsUpdatedSince;
 use Eventory\Site\Browse\SiteBrowsePerformers;
 use Eventory\Site\Browse\SiteBrowsePerformersNew;
 use Eventory\Site\Browse\SiteBrowseRecentEvents;
@@ -38,13 +39,16 @@ class SitePageIndex extends SitePageBase
 			case SitePageType::EVENT_PERFORMER_ADD:
 				$pageObject = new SiteAdminEventPerformerAdd($this->store);
 				break;
+			case SitePageType::EVENTS_UPDATED_SINCE:
+				$pageObject = new SiteBrowseEventsUpdatedSince($this->store);
+				break;
 			case SitePageType::RECENT:
 			default:
 				$pageObject = new SiteBrowseRecentEvents($this->store);
 				break;
 		}
 
-		if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+		if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'){
 			$pageObject->post($_POST);
 		}
 

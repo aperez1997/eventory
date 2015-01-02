@@ -32,7 +32,8 @@ class PerformerModel
 		$performers = $this->handleSort($performers, $sortKey ? $sortKey : Performer::SORT_DEFAULT);
 
 		// remove deleted performers
-		$performers = array_filter($performers, array($this, 'notDeleted'));
+		$fn = function(Performer $performer){ return !$performer->isDeleted(); };
+		$performers = array_filter($performers, $fn);
 
 		return $performers;
 	}
@@ -44,4 +45,4 @@ class PerformerModel
 		ksort($performers);
 		return $performers;
 	}
-} 
+}

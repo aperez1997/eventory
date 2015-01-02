@@ -33,9 +33,4 @@ class SiteBrowsePerformers extends SitePageBase
 
 		return $this->renderMain($content, 'E: Performers');
 	}
-
-	protected function notDeleted(Performer $performer)
-	{
-		return !$performer->isDeleted();
-	}
 }

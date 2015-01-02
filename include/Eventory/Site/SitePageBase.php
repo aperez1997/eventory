@@ -51,6 +51,15 @@ abstract class SitePageBase
 		}
 		return $url;
 	}
+	
+	public function getLinkEventsUpdatedSince($updated)
+	{		
+		$paramPage = SitePageParams::PAGE;
+		$pageViewEvents = SitePageType::EVENTS_UPDATED_SINCE;
+		$paramOffset = SitePageParams::OFFSET;
+		$url = sprintf("?%s=%s&%s=%s", $paramPage, $pageViewEvents, $paramOffset, intval($updated));
+		return $url;
+	}
 
 	public function getLinkBrowsePerformers($sort = null)
 	{
@@ -84,7 +93,11 @@ abstract class SitePageBase
 	{
 		$page = $this;
 		ob_start();
-		require $templatePath;
+		if (file_exists($templatePath)){
+			require $templatePath;	
+		} else {
+			throw new \Exception(sprintf('missing template [%s]', $templatePath));
+		}
 		$content = ob_get_clean();
 		return $content;
 	}

@@ -57,10 +57,18 @@ interface iStorageProvider
 	/**
 	 * @param int|null $maxCount
 	 * @param int|null $offset
-	 * @return array Event
+	 * @return Event[]
 	 */
 	public function loadRecentEvents($maxCount = null, $offset = null);
 
+	/**
+	 * @param int $updated
+	 * @param int|null $maxCount
+	 * @param bool|null $older - defaults to false
+	 * @return Event[]
+	 */
+	public function loadEventsByUpdated($updated, $maxCount = null, $older = null);
+	
 	/**
 	 * @param string $name
 	 * @return Performer
@@ -69,7 +77,7 @@ interface iStorageProvider
 
 	/**
 	 * @param array $ids
-	 * @return array Performer
+	 * @return Performer[]
 	 */
 	public function loadPerformersByIds(array $ids);
 
@@ -86,7 +94,7 @@ interface iStorageProvider
 	public function loadPerformerByName($name);
 
 	/**
-	 * @return array of Performer
+	 * @return Performer[]
 	 */
 	public function loadAllPerformers();
 
