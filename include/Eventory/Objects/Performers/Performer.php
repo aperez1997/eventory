@@ -111,14 +111,17 @@ class Performer extends ObjectAbstract
 	/**
 	 * @deprecated
 	 * @param $eventId
+	 * @param bool|null $bookkeeping
 	 */
-	public function addEventId($eventId)
+	public function addEventId($eventId, $bookkeeping = false)
 	{
 		if ($eventId instanceof Event){
 			$eventId = $eventId->getId();
 		}
-		$this->updated = time();
 		$this->eventIds[$eventId] = $eventId;
+		if ($bookkeeping){
+			$this->updated = time();	
+		}
 	}
 
 	/**

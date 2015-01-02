@@ -9,9 +9,6 @@ use Eventory\Storage\iStorageProvider;
 use Eventory\Storage\StorageProviderAbstract;
 use Eventory\Utils\ArrayUtils;
 
-/**
- * TODO: updated updating
- */
 class StorageProviderMySql extends StorageProviderAbstract implements iStorageProvider
 {
 	protected $conn;
@@ -49,19 +46,19 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		return $event;
 	}
 
-       public function createEventWithId($id, $url, $key)
-        {
-                $sql = "INSERT INTO events (id, url, `key`, created) values (?, ?, ?, NOW())";
-                $stmt = $this->getConnection()->prepare($sql);
-                $stmt->bind_param('iss', $id, $url, $key);
-                if (!$stmt->execute()){
-                        throw new \Exception(sprintf('db failure %s', $stmt->error));
-                }
+	public function createEventWithId($id, $url, $key)
+	{
+		$sql = "INSERT INTO events (id, url, `key`, created) values (?, ?, ?, NOW())";
+		$stmt = $this->getConnection()->prepare($sql);
+		$stmt->bind_param('iss', $id, $url, $key);
+		if (!$stmt->execute()){
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
+		}
 
-                $event = Event::CreateNew($url, $key);
-                $event->id = $stmt->insert_id;
-                return $event;
-        }
+		$event = Event::CreateNew($url, $key);
+		$event->id = $stmt->insert_id;
+		return $event;
+	}
 
 	/**
 	 * @param array $events		array of Event
@@ -395,6 +392,21 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 
 		return $rv;
 	}
+	
+	/**
+	 * Used to mark that an Performer was updated now
+	 * @param Performer $performer
+	 * @throws \Exception
+	 */
+	protected function markPerformerUpdated(Performer $performer)
+	{
+		$sql = "UPDATE performers SET updated = NOW() WHERE id = ?";
+		$stmt = $this->getConnection()->prepare($sql);
+		$this->bindParams($stmt, array($performer->getId()));
+		if (!$stmt->execute()){
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
+		}
+	}
 
 	public function addPerformerToEvent($performer, $event)
 	{
@@ -415,9 +427,11 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
 
+		$this->markPerformerUpdated($performer);
+		
 		// update bookkeeping
 		$event->addPerformer($performer);
-		$performer->addEventId($event->getId());
+		$performer->addEventId($event->getId(), true);
 	}
 
 	public function removePerformerFromEvent($performer, $event)

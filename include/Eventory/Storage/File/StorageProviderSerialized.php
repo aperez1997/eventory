@@ -270,7 +270,7 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 		$event = $this->getEventFromId($event);
 
 		$event->addPerformer($performer);
-		$performer->addEventId($event->getId());
+		$performer->addEventId($event->getId(), true);
 		$this->dirty = true;
 	}
 
