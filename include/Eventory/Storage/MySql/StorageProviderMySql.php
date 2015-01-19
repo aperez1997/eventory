@@ -97,6 +97,7 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		if (!$stmt->execute()){
 			throw new \Exception(sprintf('db failure %s', $stmt->error));
 		}
+		$event->setUpdated(time());
 	}
 
 	/**
