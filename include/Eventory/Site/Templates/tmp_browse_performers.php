@@ -24,7 +24,7 @@ if ($sort == SiteBrowsePerformers::SORT_ALPHA){
 	$letterContent = array();
 	foreach ($letters as $letter){
 		$letter = strtoupper($letter);
-		$letterContent[] = "<a href='#{$letter}>{$letter}</a>";
+		$letterContent[] = "<a href='#{$letter}'>{$letter}</a>";
 	}
 	$letterContent = join(' ', $letterContent);
 	echo "<div>{$letterContent}</div>";
