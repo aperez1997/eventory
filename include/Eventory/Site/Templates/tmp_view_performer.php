@@ -31,9 +31,8 @@ foreach ($urls as $url){
 echo "<a href='#' ng-confirm-click='Are you sure?' ng-click='deletePerformer({$id});' class='delete-performer'>Delete</a>";
 
 // build duplicate form
-$performers = $page->getStorageProvider()->loadAllPerformers();
-$performers = ArrayUtils::ReindexByMethod($performers, 'getName');
-ksort($performers);
+$performers = $page->getStorageProvider()->loadActivePerformerNames();
+asort($performers);
 ?>
 	
 <div class="performer-duplicate-box">
@@ -41,10 +40,10 @@ ksort($performers);
 	<select ng-model="performer-id-real" min="1" required>
 		<option value=''>--Pick One--</option>
 		<?php
-			foreach ($performers as $performer){
-				/** @var Performer $performer */
-				$pid = $performer->getId();
-				$name = $performer->getName();
+			foreach ($performers as $pid => $name){
+				if ($pid == $id){ 
+					continue; // don't include current performer
+				}
 				echo "<option value='{$pid}'>{$name}</option>\n";
 			}
 		?>

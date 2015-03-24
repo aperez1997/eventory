@@ -28,15 +28,17 @@ abstract class StorageProviderAbstract implements iStorageProvider
 		return ArrayUtils::ValueForKey($performers, $performerId);
 	}
 
-	/**
-	 * @return array of strings
-	 */
 	public function loadActivePerformerNames()
 	{
 		$performers = $this->loadAllPerformers();
 		$fn = function(Performer $p){ return !$p->isDeleted(); };
+		/** @var Performer[] $performers */
 		$performers = array_filter($performers, $fn);
-		return array_map(function(Performer $p){ return $p->getName(); }, $performers);
+		$result = array();
+		foreach ($performers as $performer){
+			$result[$performer->getId()] = $performer->getName();			
+		}
+		return $result;
 	}
 
 	/**

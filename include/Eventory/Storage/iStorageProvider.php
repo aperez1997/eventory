@@ -94,12 +94,13 @@ interface iStorageProvider
 	public function loadPerformerByName($name);
 
 	/**
+	 * @deprecated - should replace with with loadActivePerformerNames, unless we need event count. then we'll want a new method
 	 * @return Performer[]
 	 */
 	public function loadAllPerformers();
 
 	/**
-	 * @return array of strings
+	 * @return string[] Array of id => name
 	 */
 	public function loadActivePerformerNames();
 

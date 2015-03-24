@@ -361,6 +361,22 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		return $performers;
 	}
 
+	public function loadActivePerformerNames()
+	{
+		// we cant rely on using loadAllPerformers to do this; it causes funny behaviors
+		$sql = "SELECT id, name FROM performers WHERE deleted = 0";
+		$stmt = $this->getConnection()->prepare($sql);
+		if (!$stmt->execute()){
+			throw new \Exception(sprintf('db failure %s', $stmt->error));
+		}
+		$res = $stmt->get_result();
+		$performers = array();
+		while ($row = $res->fetch_assoc()){
+			$performers[$row['id']] = $row['name'];
+		}
+		return $performers;
+	}
+	
 	/**
 	 * @param $id
 	 * @return bool
