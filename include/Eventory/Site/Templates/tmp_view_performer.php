@@ -17,6 +17,7 @@ $id = $performer->getId();
 $high = $performer->isHighlighted();
 
 echo "<h1>{$name} #{$id}". ($high ? ' Highlighted!' : '') ."</h1>";
+echo "<a href='#' ng-click='toggleHighlight({$id});'>toggle highlight</a>";
 
 $img = $performer->getImageUrl();
 if ($img){

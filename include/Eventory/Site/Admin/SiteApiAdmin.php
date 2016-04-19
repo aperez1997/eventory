@@ -66,4 +66,15 @@ class SiteApiAdmin extends SiteApiAbstract
 		
 		$this->model->markPerformerDuplicate($perfDupe, $perfReal);
 	}
+
+	public function toggleHighlight(\Zaphpa_Request $req, \Zaphpa_Response $res)
+	{
+		$perf = $this->store->loadPerformerById($req->params['performer_id']);
+		if (!$perf instanceof Performer){
+			$this->sendError($res, 'performer not found', 400);
+		}
+		$this->model->togglePerformerHighlight($perf);
+
+		$this->send($res, 200);
+	}
 }

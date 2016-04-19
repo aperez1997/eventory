@@ -37,7 +37,14 @@ function eventPerformerController($scope, $http, $window){
     $http.post("api.php?path="+path, null)
       .success(reload)
       .error(error);
-  }
+  };
+    
+  $scope.toggleHighlight = function(pId){
+    var path = "admin/performer/"+ pId + "/changeHighlight";
+    $http.post("api.php?path="+path, null)
+        .success(reload)
+        .error(error);
+  };
 }
 
 var adminApp = angular.module("adminApp", []);

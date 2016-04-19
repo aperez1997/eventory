@@ -79,7 +79,7 @@ class EventModel
 	/**
 	 * @param Performer $dupePerformer
 	 * @param Performer $realPerformer
-	 * @return array Event
+	 * @return Event[]
 	 */
 	public function markPerformerDuplicate(Performer $dupePerformer, Performer $realPerformer)
 	{
@@ -93,5 +93,27 @@ class EventModel
 		$this->store->deletePerformer($dupePerformer->getId());
 
 		return $events;
+	}
+
+	/**
+	 * @param $performerId
+	 * @throws \Exception
+	 */
+	public function togglePerformerIdHighlight($performerId)
+	{
+		$performer = $this->store->loadPerformerById($performerId);
+		if (!$performer instanceof Performer){
+			throw new \Exception(sprintf('Invalid performer id [%s]', $performerId));
+		}		
+		
+		$this->togglePerformerHighlight($performer);
+	}
+
+	/**
+	 * @param Performer $performer
+	 */
+	public function togglePerformerHighlight(Performer $performer)
+	{
+		$this->store->setPerformerHighlight($performer, !$performer->isHighlighted());
 	}
 }

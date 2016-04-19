@@ -70,6 +70,7 @@ interface iStorageProvider
 	public function loadEventsByUpdated($updated, $maxCount = null, $older = null);
 	
 	/**
+	 * Creates a performer with the given, or returns the existing one if one already exists
 	 * @param string $name
 	 * @return Performer
 	 */
@@ -83,13 +84,13 @@ interface iStorageProvider
 
 	/**
 	 * @param string $performerId
-	 * @return Performer
+	 * @return Performer|null
 	 */
 	public function loadPerformerById($performerId);
 
 	/**
 	 * @param string $name
-	 * @return Performer
+	 * @return Performer|null
 	 */
 	public function loadPerformerByName($name);
 
@@ -104,6 +105,14 @@ interface iStorageProvider
 	 */
 	public function loadActivePerformerNames();
 
+	/**
+	 * Use to change the highlight value of the given performer
+	 * @param Performer $performer
+	 * @param bool $highlight
+	 * @return
+	 */
+	public function setPerformerHighlight(Performer $performer, $highlight);
+	
 	/**
 	 * @param $id
 	 * @return bool

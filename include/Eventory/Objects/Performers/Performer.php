@@ -112,6 +112,7 @@ class Performer extends ObjectAbstract
 
 	/**
 	 * @deprecated
+	 * @see iStorageProvider::addPerformerToEvent
 	 * @param $eventId
 	 * @param bool|null $bookkeeping
 	 */
@@ -128,6 +129,7 @@ class Performer extends ObjectAbstract
 
 	/**
 	 * @deprecated
+	 * @see iStorageProvider::addPerformerToEvent
 	 * @param array $eventIds
 	 */
 	public function addEventIds(array $eventIds)
@@ -139,6 +141,7 @@ class Performer extends ObjectAbstract
 
 	/**
 	 * @deprecated
+	 * @see iStorageProvider::removePerformerFromEvent
 	 * @param Event $event
 	 */
 	public function removeEvent(Event $event)

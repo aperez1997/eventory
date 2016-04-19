@@ -70,6 +70,13 @@ class SiteApiProcessor
                 'post' => array($this->adminApi, 'deletePerformer'),
             ));
 			$router->addRoute(array(
+				'path' => '/admin/performer/{performer_id}/toggleHighlight',
+				'handlers' => array(
+					'performer_id' => \Zaphpa_Constants::PATTERN_DIGIT,
+				),
+				'post' => array($this->adminApi, 'toggleHighlight'),
+			));
+			$router->addRoute(array(
                 'path' => '/admin/performer/{performer_id_dupe}/duplicate/{performer_id_real}',
                 'handlers' => array(
                     'performer_id_dupe' => \Zaphpa_Constants::PATTERN_DIGIT,

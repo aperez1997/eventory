@@ -376,6 +376,14 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 		}
 		return $performers;
 	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setPerformerHighlight(Performer $performer, $highlight)
+	{
+		$this->updateRecord('performers', $performer->getId(), array('highlight' => $highlight ? true : false));
+	}
 	
 	/**
 	 * @param $id

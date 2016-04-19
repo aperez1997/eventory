@@ -242,6 +242,19 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public function setPerformerHighlight(Performer $performer, $highlight)
+	{
+		$performer->setHighlight($highlight);
+		if ($highlight){
+			$this->performersHigh[$performer->getId()] = $performer;	
+		} else {
+			unset($this->performersHigh[$performer->getId()]);
+		}
+	}
+	
+	/**
 	 * @param $id
 	 * @return bool
 	 */
