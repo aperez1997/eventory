@@ -250,7 +250,8 @@ class StorageProviderMySql extends StorageProviderAbstract implements iStoragePr
 			$older = false;		
 		}
 		$operator = $older ? '<=' : '>=';
-		$sql = sprintf("SELECT * FROM events WHERE updated %s ? ORDER BY updated DESC %s", $operator, $limitSQL);
+		$order = $older ? 'DESC' : 'ASC';
+		$sql = sprintf("SELECT * FROM events WHERE UNIX_TIMESTAMP(updated) %s ? ORDER BY updated %s %s", $operator, $order, $limitSQL);
 		$stmt = $this->getConnection()->prepare($sql);
 		$this->bindParams($stmt, array(intval($updated)));
 		if (!$stmt->execute()){
