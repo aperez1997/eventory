@@ -32,7 +32,7 @@ class Performer extends ObjectAbstract
 		}
 		$performer->convertTinyIntToBool('deleted');
 		$performer->convertTinyIntToBool('highlight');
-		$performer->convertDateStringToTime('created');
+		//$performer->convertDateStringToTime('created');
 		$performer->convertDateStringToTime('updated');
 		if (isset($data['site_urls']) && is_string($data['site_urls'])){
 		    $urls = explode(',', $data['site_urls']);

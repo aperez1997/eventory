@@ -20,27 +20,24 @@ function eventPerformerController($scope, $http, $window){
         .error(error);
   };
   
-  $scope.markDuplicate = function(){
-    var dupeId = $scope['performer-id-dupe'];
+  $scope.markDuplicate = function(dupeId){
     if (!(dupeId > 0)){
       alert('invalid dupe performer');   
       return;
     }
-    var realId = $scope['performer-id-real'];
+    var realId = $scope['performerIdReal'];
     if (!(realId > 0)){
       alert('invalid real performer');   
       return;
     }
     var path = "admin/performer/"+ dupeId + "/duplicate/" + realId;
-    alert(path);
-    return;
     $http.post("api.php?path="+path, null)
       .success(reload)
       .error(error);
   };
     
   $scope.toggleHighlight = function(pId){
-    var path = "admin/performer/"+ pId + "/changeHighlight";
+    var path = "admin/performer/"+ pId + "/toggleHighlight";
     $http.post("api.php?path="+path, null)
         .success(reload)
         .error(error);

@@ -17,7 +17,7 @@ $id = $performer->getId();
 $high = $performer->isHighlighted();
 
 echo "<h1>{$name} #{$id}". ($high ? ' Highlighted!' : '') ."</h1>";
-echo "<a href='#' ng-click='toggleHighlight({$id});'>toggle highlight</a>";
+echo "<label>Highlight?</label><input type=checkbox ng-click='toggleHighlight({$id});' " . ($high ? "Checked" : "") . " />";
 
 $img = $performer->getImageUrl();
 if ($img){
@@ -37,8 +37,7 @@ asort($performers);
 ?>
 	
 <div class="performer-duplicate-box">
-	<input type="hidden" ng-model="performer-id-dupe" value="<?=$id?>"/>
-	<select ng-model="performer-id-real" min="1" required>
+	<select ng-model="performerIdReal" min="1" required>
 		<option value=''>--Pick One--</option>
 		<?php
 			foreach ($performers as $pid => $name){
@@ -49,7 +48,7 @@ asort($performers);
 			}
 		?>
 	</select>
-	<button ng-confirm-click='Are you sure?' ng-click='markDuplicatePerformer();'>Mark Duplicate</button>
+	<button ng-confirm-click='Are you sure?' ng-click='markDuplicate(<?=$id?>);'>Mark Duplicate</button>
 </div>
 <?php
 $eventIds = $performer->getEventIds();
