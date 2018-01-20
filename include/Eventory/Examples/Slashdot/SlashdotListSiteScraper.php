@@ -15,14 +15,15 @@ class SlashdotListSiteScraper extends EventListSiteScraperV1
 
 	protected function getListSiteUrl()
 	{
-		return 'http://slashdot.org';
+		return 'https://slashdot.org/';
 	}
 
 	public function isNodeEventLink(\simple_html_dom_node $htmlNode)
 	{
 		$href = $htmlNode->href;
-		$pattern = '/'.preg_quote('news.slashdot.org/story/', '/').'/';
-		return preg_match($pattern, $href);
+		$pattern = '/'.preg_quote('slashdot.org/story/', '/').'/';
+		$val = preg_match($pattern, $href);
+		return $val;
 	}
 
 	protected function getEventHrefFromNode(\simple_html_dom_node $htmlNode)

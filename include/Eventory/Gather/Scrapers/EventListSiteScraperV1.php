@@ -20,6 +20,9 @@ abstract class EventListSiteScraperV1
 
 	protected $content;
 
+	/**
+	 * @return array
+	 */
 	public function scrapeFromWeb()
 	{
 		$scrapeItems = $this->scrapeFromWebIntoScrapeItems();
@@ -29,7 +32,7 @@ abstract class EventListSiteScraperV1
 			/** @var EventScrapeItem $scrapeItem */
 			$eventSiteScraper = $this->siteScraperFactory->getSiteScraperForScrapeItem($scrapeItem);
 			if (!$eventSiteScraper instanceof EventSiteScraperV1){
-				printf("item [%s] does not map to a site scraper\n", print_r($scrapeItem, true));
+				error_log(printf("item [%s] does not map to a site scraper\n", $scrapeItem));
 				continue;
 			}
 			$key = $scrapeItem->eventKey;
@@ -48,7 +51,7 @@ abstract class EventListSiteScraperV1
 	}
 
 	/**
-	 * @return array[EventScrapeItems]
+	 * @return EventScrapeItem[]
 	 */
 	public function scrapeFromWebIntoScrapeItems()
 	{
@@ -67,13 +70,18 @@ abstract class EventListSiteScraperV1
 	}
 
 	/**
-	 * @return array[EventScrapeItems]
+	 * @param string $source - filename or url
+	 * @return EventScrapeItem[]
 	 */
 	public function parseIntoEventScrapeItems($source)
 	{
 		$scrapeItems = array();
 
 		$html = $this->getHtml($source);
+		if (!$html instanceof \simple_html_dom){
+			error_log(printf("Failed to get html for source [%s]", $source));
+			return array();
+		}
 
 		foreach ($html->find('a') as $htmlNode){
 			/** @var \simple_html_dom_node $htmlNode */
@@ -90,6 +98,10 @@ abstract class EventListSiteScraperV1
 		return $scrapeItems;
 	}
 
+	/**
+	 * @param string $source - file or url
+	 * @return bool|\simple_html_dom
+	 */
 	protected function getHtml($source)
 	{
 		if (is_file($source)){
@@ -108,9 +120,17 @@ abstract class EventListSiteScraperV1
 
 	    // $output contains the output string
 	    $output = curl_exec($ch);
+		$responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$errorMessage = curl_error($ch);
 
 	    // close curl resource to free up system resources
 	    curl_close($ch);
+	    
+		if ($responseCode != 200){
+			error_log(printf("Failed to curl source %s with [%s:%s]", $source, $responseCode, $errorMessage));
+			return false;
+		}
+	    
 		return str_get_html($output);
 	}
 

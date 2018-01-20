@@ -17,11 +17,11 @@ class ExampleSiteScraperFactory extends EventSiteScraperFactoryV1
 	{
 		$domain = HttpUtils::GetDomainFromUrl($scrapeItem->eventUrl);
 		switch ($domain){
-			case 'news.slashdot.org':
+			default:
 				return new SlashdotEventSiteScraper($this->store);
 				break;
 		}
-		printf("unmatched domain [%s]\n", $domain);
+		error_log(printf("unmatched domain [%s] for %s\n", $domain, $scrapeItem));
 		return null;
 	}
 }

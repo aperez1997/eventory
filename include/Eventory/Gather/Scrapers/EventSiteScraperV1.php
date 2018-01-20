@@ -72,6 +72,10 @@ abstract class EventSiteScraperV1
 
 		if (isset($this->maxToScrape)) $this->maxToScrape--;
 		$this->htmlDom = $this->getHtml($subUrl);
+		if (!$this->htmlDom instanceof \simple_html_dom){
+			error_log(printf("Failed to process source [%s] into dom", $subUrl));
+			return;
+		}
 
 		// update event with new data
 		$this->store->addSubUrlsToEvent($this->event, array($this->eventScrapeItem->eventUrl));

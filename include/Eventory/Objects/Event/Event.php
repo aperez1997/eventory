@@ -175,7 +175,15 @@ class Event extends ObjectAbstract
 		return $this->getUpdated() + $assetFactor;
 	}
 
-        public function getImageEventUrl(){
-                return sprintf('/image.php?url=%s', $this->eventUrl);
-        }
+	public function getImageEventUrl(){
+			return sprintf('/image.php?url=%s', $this->eventUrl);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return print_r($this, true);
+	}
 }

@@ -22,7 +22,7 @@ class StorageProviderSerialized extends StorageProviderAbstract implements iStor
 
 	protected $events;
 	protected $performers;
-
+	protected $performersHigh;
 	protected $keyToIdxMap;
 
 	public function __construct($fileName)
